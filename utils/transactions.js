@@ -13,7 +13,6 @@ const creditAccount = async ({
   email,
   purpose,
   reference,
-  summary,
   trnxSummary,
   session,
 }) => {
@@ -40,7 +39,6 @@ const creditAccount = async ({
     reference,
     balanceBefore: Number(existingUser.totalBalance),
     balanceAfter: Number(existingUser.totalBalance) + Number(amount),
-    summary,
     trnxSummary,
   });
 
@@ -64,7 +62,6 @@ const debitAccount = async ({
   email,
   purpose,
   reference,
-  summary,
   trnxSummary,
   session,
 }) => {
@@ -98,7 +95,6 @@ const debitAccount = async ({
     reference,
     balanceBefore: Number(existingUser.totalBalance),
     balanceAfter: Number(existingUser.totalBalance) - Number(amount),
-    summary,
     trnxSummary,
   });
 

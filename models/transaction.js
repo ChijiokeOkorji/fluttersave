@@ -10,7 +10,7 @@ const transactionSchema = new Schema(
     },
     purpose: {
       type: String,
-      enum: ["card deposit", "P2P", "bank withdrawal"],
+      enum: ["deposit", "P2P", "withdrawal"],
       required: true,
     },
     amount: {
@@ -42,10 +42,6 @@ const transactionSchema = new Schema(
     },
     balanceAfter: {
       type: mongoose.Decimal128,
-      required: true,
-    },
-    summary: {
-      type: String,
       required: true,
     },
     trnxSummary: {
