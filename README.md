@@ -1,6 +1,6 @@
 # Fluttersave
 
-Svings and peer-to-peer transactions web application powered by Fluttterwave.
+Savings and peer-to-peer transactions web application powered by Fluttterwave.
 
 ## Available Scripts
 
