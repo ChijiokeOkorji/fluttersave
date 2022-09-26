@@ -22,9 +22,9 @@ const HistoryDetailsPage = lazy(() => import('../../pages/HistoryDetailsPage'));
 const ProfilePage = lazy(() => import('../../pages/ProfilePage'));
 
 async function getData() {
-  const data = await axios('/fluttersave/server/');
+  const data = await axios('/server');
 
-  console.log(data.data);
+  console.log(data);
 }
 
 getData();
