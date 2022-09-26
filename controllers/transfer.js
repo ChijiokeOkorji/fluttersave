@@ -8,9 +8,9 @@ const transfer = asyncWraper(async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { toEmail, fromEmail, amount, summary } = req.body;
+    const { toEmail, fromEmail, amount } = req.body;
     const reference = v4();
-    if (!toEmail && !fromEmail && !amount && !summary) {
+    if (!toEmail && !fromEmail && !amount) {
       return res.status(400).json({
         status: false,
         message:
@@ -24,7 +24,6 @@ const transfer = asyncWraper(async (req, res) => {
         email: fromEmail,
         purpose: "P2P",
         reference,
-        summary,
         trnxSummary: `TRFR TO: ${toEmail}. TRNX REF:${reference}`,
         session,
       }),
@@ -33,7 +32,6 @@ const transfer = asyncWraper(async (req, res) => {
         email: toEmail,
         purpose: "P2P",
         reference,
-        summary,
         trnxSummary: `TRFR FROM: ${fromEmail}. TRNX REF:${reference} `,
         session,
       }),
