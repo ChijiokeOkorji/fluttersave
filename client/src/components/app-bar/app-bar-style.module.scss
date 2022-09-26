@@ -1,0 +1,24 @@
+@use '../../global-styles/abstracts';
+
+.appBar {
+  width: 100%;
+  height: 3.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  z-index: 99;
+
+  &.top {
+    @include abstracts.z4-elevation;
+    padding: 0 1rem;
+    justify-content: flex-end;
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  &.bottom {
+    @include abstracts.z8-elevation;
+    gap: 1rem;
+    justify-content: space-around;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+}

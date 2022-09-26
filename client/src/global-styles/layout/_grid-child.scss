@@ -1,0 +1,31 @@
+@mixin grid-responsive-child {
+  grid-column: 1/-1;
+
+  @media screen and (min-width: 640px) {
+    & {
+      grid-column: 2/-2;
+    }
+  }
+  
+  @media screen and (min-width: 960px) {
+    & {
+      grid-column: 3/-3;
+    }
+  }
+  
+  @media screen and (min-width: 1280px) {
+    & {
+      grid-column: 4/-4;
+    }
+  }
+  
+  @media screen and (min-width: 1600px) {
+    & {
+      grid-column: 5/-5;
+    }
+  }
+}
+
+@mixin grid-full-child {
+  grid-column: 1/-1;
+}

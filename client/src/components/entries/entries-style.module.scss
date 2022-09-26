@@ -1,0 +1,65 @@
+@use '../../global-styles/abstracts';
+
+.entryArea {
+  width: max(17.5rem, 50%);
+  margin: 0rem auto;
+  display: flex;
+  flex-direction: column;
+  color: abstracts.$main-color;
+
+  .title {
+    @include abstracts.h5-font;
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .lsEntry, .txEntry {
+    padding: 1rem 0 1rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 0.0625rem solid abstracts.$border-stroke;
+  }
+
+  .lsEntry {
+    flex-direction: column;
+
+    .label {
+      @include abstracts.overline-font;
+    }
+  }
+
+  .txEntry {
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 96%);
+    }
+
+    .sender {
+      @include abstracts.body2-font;
+      height: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .right {
+      @include abstracts.subtitle2-font;
+      flex-shrink: 0;
+      width: 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    & .credit {
+      color: abstracts.$color2;
+    }
+
+    & .debit {
+      color: abstracts.$color3;
+    }
+  }
+}

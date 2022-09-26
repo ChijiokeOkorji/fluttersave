@@ -1,0 +1,17 @@
+@use '../../global-styles/abstracts';
+
+.image {
+  width: 3rem;
+  margin: auto;
+  animation: rotate 1s linear 0s infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

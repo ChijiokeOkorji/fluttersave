@@ -1,0 +1,34 @@
+@use '../../global-styles/abstracts';
+
+.button {
+  min-width: 3rem;
+  height: 3rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.25rem;
+  background-color: #ffffff00;
+  color: abstracts.$main-color;
+
+  &:hover {
+    @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 96%);
+  }
+
+  &:focus {
+    @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 90%);
+  }
+
+  &:active {
+    @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 84%);
+  }
+
+  .icon {
+    font-size: 1.25rem;
+  }
+
+  .subtitle {
+    @include abstracts.caption-font;
+  }
+}

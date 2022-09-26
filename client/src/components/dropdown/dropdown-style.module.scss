@@ -1,0 +1,103 @@
+@use '../../global-styles/abstracts';
+
+$background-color: #ffffff;
+
+.menu {
+  width: max(17.5rem, 50%);
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  z-index: 9;
+
+  .input {
+    @include abstracts.body1-font;
+    @include abstracts.z0-elevation;
+    height: 3rem;
+    padding: 0 0.75rem 0 1rem;
+    flex-grow: 1;
+    align-self: stretch;
+    background-color: transparent;
+    color: abstracts.$main-color;
+    border-radius: 0.25rem;
+    outline: none;
+    cursor: pointer;
+  
+    &::placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+      opacity: 1;
+    }
+    
+    &:-ms-input-placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+    }
+    
+    &::-ms-input-placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+    }
+  
+    &:focus {
+      padding: 0 0.6875rem 0 0.9375rem;
+      border: 0.125rem solid abstracts.$main-color;
+    }
+  }
+
+  .icon {
+    height: 2.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: {
+      right: 0.25rem;
+      top: 0.125rem;
+    };
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: $background-color;
+    color: abstracts.$main-color;
+    border-radius: 0.125rem;
+    z-index: -1;
+  
+    & * {
+      margin: 0 0.625rem 0 0.75rem;
+      cursor: pointer;
+    }
+  }
+
+  .dropdown {
+    @include abstracts.z4-elevation;
+    width: 100%;
+    height: 50vh;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: $background-color;
+    border-radius: 0.5rem;
+    transform: translate(0, calc(100% + 0.25rem));
+    overflow-y: hidden;
+
+    & input {
+      margin-bottom: 0.5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    .entriesArea {
+      flex-grow: 1;
+      overflow-y: scroll;
+    }
+
+    .entry {
+      padding: 1rem;
+      border-bottom: 0.0625rem solid abstracts.$border-stroke;
+      cursor: pointer;
+
+      &:hover {
+        @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 96%);
+      }
+    }
+  }
+}

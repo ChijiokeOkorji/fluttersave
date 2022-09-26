@@ -1,0 +1,28 @@
+@use '../../global-styles/layout';
+
+.pageOverlay {
+  @include layout.grid-parent(center);
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 99999;
+
+  & * {
+    @include layout.grid-responsive-child();
+  }
+
+  &.popup {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &.full {
+    grid-template-rows: repeat(auto-fit, minmax(0, 100%));
+    justify-items: stretch;
+    align-items: stretch;
+
+    * {
+      @include layout.grid-full-child();
+    }
+  }
+}

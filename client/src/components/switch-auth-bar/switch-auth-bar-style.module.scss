@@ -1,0 +1,14 @@
+@use '../../global-styles/abstracts';
+
+.signInArea {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+
+  button {
+    margin: {
+      left: 0.5rem;
+      right: 0;
+    };
+  }
+}

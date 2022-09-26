@@ -1,0 +1,80 @@
+@use '../../global-styles/abstracts';
+
+$background-color: #ffffff;
+
+.inputBox {
+  width: max(17.5rem, 50%);
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+
+  .input {
+    @include abstracts.body1-font;
+    @include abstracts.z0-elevation;
+    height: 3rem;
+    padding: 0 0.75rem 0 1rem;
+    flex-grow: 1;
+    align-self: stretch;
+    background-color: $background-color;
+    color: abstracts.$main-color;
+    border-radius: 0.25rem;
+    outline: none;
+  
+    &::placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+      opacity: 1;
+    }
+    
+    &:-ms-input-placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+    }
+    
+    &::-ms-input-placeholder {
+      color: abstracts.color-emphasis(abstracts.$main-color, medium-emphasis);
+    }
+  
+    &:focus {
+      padding: 0 0.6875rem 0 0.9375rem;
+      border: 0.125rem solid abstracts.$main-color;
+    }
+  }
+
+  &.error {
+    .input {
+      padding: 0 0.6875rem 0 0.9375rem;
+      border: 0.125rem solid abstracts.$error-color;
+    }
+  }
+
+  .icon {
+    height: 2.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: {
+      right: 0.25rem;
+      top: 0.125rem;
+    };
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: $background-color;
+    color: abstracts.$main-color;
+    border-radius: 0.125rem;
+    cursor: default;
+  
+    & * {
+      margin: 0 0.625rem 0 0.75rem;
+      cursor: pointer;
+    }
+  }
+
+  .errorMessage {
+    @include abstracts.caption-font;
+    margin: {
+      left: 1rem;
+      top: 0.25rem;
+    };
+    color: abstracts.$error-color;
+  }
+}

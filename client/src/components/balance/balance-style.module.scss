@@ -1,0 +1,21 @@
+@use '../../global-styles/abstracts';
+
+.balance {
+  @include abstracts.z1-elevation;
+  @include abstracts.h5-font;
+  width: max(50%, 17.5rem);
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  background-color: #ffffff;
+  color: abstracts.$main-color;
+  border-radius: 0.5rem;
+  text-align: center;
+
+  .title {
+    @include abstracts.body2-font;
+    padding: 0.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
