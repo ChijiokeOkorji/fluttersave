@@ -22,7 +22,7 @@ const HistoryDetailsPage = lazy(() => import('../../pages/HistoryDetailsPage'));
 const ProfilePage = lazy(() => import('../../pages/ProfilePage'));
 
 async function getData() {
-  const data = await axios('/server');
+  const data = await axios('https://fluttersave.herokuapp.com/server');
 
   console.log(data.data);
 }
