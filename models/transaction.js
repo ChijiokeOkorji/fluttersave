@@ -10,7 +10,7 @@ const transactionSchema = new Schema(
     },
     purpose: {
       type: String,
-      enum: ["deposit", "transfer", "withdrawal"],
+      enum: ["card deposit", "P2P", "bank withdrawal"],
       required: true,
     },
     amount: {

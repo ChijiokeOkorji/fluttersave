@@ -1,71 +1,66 @@
 const Transaction = require("../models/transaction");
+
+// const Flutterwave = require("flutterwave-node-v3");
+
+// const flw = new Flutterwave(
+//   process.env.FLW_PUBLIC_KEY,
+//   process.env.FLW_SECRET_KEY
+// );
+
 const mongoose = require("mongoose");
 const { v4 } = require("uuid");
-const { creditAccount, debitAccount } = require("../utils/transactions");
+const { creditAccount, cardDeposit } = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
-const cardDeposit = asyncWraper(async () => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  
+const makeCardDeposit = asyncWraper(async (req, res) => {
   try {
-    const { toEmail, fromEmail, amount, summary } = req.body;
+    const { fullname, mobileNumber, toEmail, depositAmount, summary } =
+      req.body;
     const reference = v4();
-    if (!toEmail && !fromEmail && !amount && !summary) {
+    const currency = "NGN";
+    if (!fullname && !mobileNumber && !depositAmount && !toEmail && !summary) {
       return res.status(400).json({
         status: false,
-        message:
-          "Please provide the following details: toEmail, fromEmail, amount, summary",
+        message: "Please provide all input fields",
       });
     }
 
     const transferResult = await Promise.all([
-      debitAccount({
-        amount,
-        email: fromEmail,
-        purpose: "P2P",
+      cardDeposit({
+        mobileNumber,
+        depositAmount,
+        fullname,
+        toEmail,
         reference,
-        summary,
-        trnxSummary: `TRFR TO: ${toEmail}. TRNX REF:${reference}`,
-        session,
-      }),
-      creditAccount({
-        amount,
-        email: toEmail,
-        purpose: "P2P",
-        reference,
-        summary,
-        trnxSummary: `TRFR FROM: ${fromEmail}. TRNX REF:${reference} `,
-        session,
       }),
     ]);
 
     const failedTxns = transferResult.filter(
-      (result) => result.status !== true
+      (result) => result.status !== "success"
     );
     if (failedTxns.length) {
       const errors = failedTxns.map((a) => a.message);
-      await session.abortTransaction();
       return res.status(400).json({
         status: false,
         message: errors,
       });
     }
 
-    await session.commitTransaction();
-    session.endSession();
+    console.log(transferResult[0].link);
 
     return res.status(201).json({
       status: true,
-      message: "Transfer successful",
+      message: "Deposit successful",
     });
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
-
     return res.status(500).json({
       status: false,
-      message: `Unable to perform transfer. Please try again. \n Error: ${err}`,
+      message: `Unable to make card Deposit. Please try again. \n Error: ${err}`,
     });
   }
 });
+
+// const bankWithdrawal = asyncWraper(async () => {
+//   const { fromEmail, amount, summary } = req.body;
+// });
+module.exports = { makeCardDeposit };
