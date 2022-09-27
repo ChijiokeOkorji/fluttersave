@@ -46,7 +46,8 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
     }
 
     // return res.redirect(depositResult[0].link);
-    return res.send(depositResult[0].link);
+    return res.send(depositResult);
+    // return res.send(depositResult[0].link);
 
     // return res.status(201).json({
     //   status: true,
