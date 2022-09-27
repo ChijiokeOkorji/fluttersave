@@ -2,6 +2,7 @@ require("dotenv").config();
 
 // const axios = require('axios');
 const express = require("express");
+const path = require("path");
 // const Flutterwave = require("flutterwave-node-v3");
 
 // const flw = new Flutterwave(
@@ -17,9 +18,14 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.use("/fluttersave/", userRoutes);
 app.use("/fluttersave/", transactionRoutes);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 const PORT = process.env.PORT || 8080;
 
