@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { lazy, Suspense } from "react";
 import { Routes, Route } from 'react-router-dom';
 
@@ -20,14 +18,6 @@ const RecipientUserPage = lazy(() => import('../../pages/RecipientUserPage'));
 const HistoryPage = lazy(() => import('../../pages/HistoryPage'));
 const HistoryDetailsPage = lazy(() => import('../../pages/HistoryDetailsPage'));
 const ProfilePage = lazy(() => import('../../pages/ProfilePage'));
-
-async function getData() {
-  const data = await axios('/server');
-
-  console.log(data);
-}
-
-getData();
 
 const App = () => {
   return (

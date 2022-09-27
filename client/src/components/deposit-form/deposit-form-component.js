@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Navigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
 
@@ -42,12 +43,19 @@ const DepositForm = () => {
     return false
   }, [validateAmount]);
 
-  const [shouldRedirect, setShouldRedirect] = useState(false);
+  // const [shouldRedirect, setShouldRedirect] = useState(false);
 
   async function handleSignup() {
     // console.log(amount);
     // console.log('User has logged in');
-    setShouldRedirect(true);
+    // setShouldRedirect(true);
+
+    const data = await axios.post('/deposit', {
+      fullName: "John Doe",
+      mobileNumber: "(+234) 9012345678",
+      toEmail: "johndoe@anonymous.com",
+      depositAmount: "50000"
+    });
   }
 
   return (
@@ -56,9 +64,9 @@ const DepositForm = () => {
 
       <Button label="Deposit" onClick={handleSignup} disabled={disableButton} />
 
-      {shouldRedirect &&
+      {/* {shouldRedirect &&
         <Navigate to="/deposit/modal" />
-      }
+      } */}
     </Form>
   );
 };
