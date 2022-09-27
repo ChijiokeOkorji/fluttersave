@@ -21,10 +21,6 @@ app.use(express.json());
 app.use("/fluttersave/", userRoutes);
 app.use("/fluttersave/", transactionRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Home page");
-});
-
 const PORT = process.env.PORT || 8080;
 
 const start = async () => {
