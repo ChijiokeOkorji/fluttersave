@@ -1,12 +1,6 @@
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 const got = require("got");
-// const Flutterwave = require("flutterwave-node-v3");
-
-// const flw = new Flutterwave(
-//   process.env.FLW_PUBLIC_KEY,
-//   process.env.FLW_SECRET_KEY
-// );
 
 const creditAccount = async ({
   amount,
@@ -111,38 +105,6 @@ const debitAccount = async ({
   };
 };
 
-// const cardDeposit = async ({
-//   card_number,
-//   cvv,
-//   expiry_month,
-//   expiry_year,
-//   currency,
-//   amount,
-//   fullname,
-//   email,
-//   tx_ref,
-// }) => {
-//   const deposit = await flw.Charge.card(
-//     card_number,
-//     cvv,
-//     expiry_month,
-//     expiry_year,
-//     currency,
-//     amount,
-//     fullname,
-//     email,
-//     tx_ref
-//   );
-
-//   console.log("Deposit successful");
-//   return {
-//     status: true,
-//     statusCode: 201,
-//     message: "Deposit successful",
-//     data: { deposit },
-//   };
-// };
-
 const cardDeposit = async ({
   reference,
   depositAmount,
@@ -189,8 +151,42 @@ const cardDeposit = async ({
   }
 };
 
+const bankWithdrawal = async ({
+  reference,
+  amount,
+  summary,
+  accountNumber,
+  bankCode,
+}) => {
+  try {
+    const response = await got
+      .post("https://api.flutterwave.com/v3/transfers", {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+        },
+        json: {
+          account_bank: bankCode,
+          account_number: accountNumber,
+          amount: amount,
+          narration: summary,
+          currency: "NGN",
+          reference: reference,
+          callback_url: "https://www.flutterwave.com/ng/",
+          debit_currency: "NGN",
+        },
+      })
+      .json();
+
+    return { response };
+  } catch (err) {
+    console.log(err.code);
+    console.log(err.response.body);
+  }
+};
+
 module.exports = {
   creditAccount,
   debitAccount,
   cardDeposit,
+  bankWithdrawal,
 };
