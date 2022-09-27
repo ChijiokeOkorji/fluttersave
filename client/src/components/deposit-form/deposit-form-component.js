@@ -56,6 +56,8 @@ const DepositForm = () => {
       toEmail: "johndoe@anonymous.com",
       depositAmount: "50000"
     });
+
+    console.log(data);
   }
 
   return (
