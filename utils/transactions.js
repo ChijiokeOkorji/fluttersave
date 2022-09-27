@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
-const got = require("got");
+// const got = require("got");
+const axios = require('axios');
 // const Flutterwave = require("flutterwave-node-v3");
 
 // const flw = new Flutterwave(
@@ -151,38 +152,64 @@ const cardDeposit = async ({
   fullname,
 }) => {
   try {
-    const response = await got
-      .post("https://api.flutterwave.com/v3/payments", {
-        headers: {
-          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
-        },
-        json: {
-          tx_ref: reference,
-          amount: depositAmount,
-          currency: "NGN",
-          payment_options: "card",
-          redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
-          meta: {
-            consumer_id: 23,
-            consumer_mac: "92a3-912ba-1192a",
-          },
-          customer: {
-            email: toEmail,
-            phonenumber: mobileNumber,
-            name: fullname,
-          },
-          customizations: {
-            title: "Fluttersave",
-            logo: "",
-          },
-        },
-      })
-      .json();
+    const response = await axios.post("https://api.flutterwave.com/v3/payments", {
+      tx_ref: reference,
+      amount: depositAmount,
+      currency: "NGN",
+      redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
+      meta: {
+        consumer_id: 23,
+        consumer_mac: "92a3-912ba-1192a"
+      },
+      customer: {
+        email: toEmail,
+        phone_number: mobileNumber,
+        name: fullname
+      },
+      customizations: {
+        title: "Fluttersave",
+        logo: ""
+      }
+    }, {
+      headers: {
+        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+      }
+    });
 
-    return {
-      status: response.status,
-      link: response.data.link,
-    };
+    // const response = await got
+    //   .post("https://api.flutterwave.com/v3/payments", {
+    //     headers: {
+    //       Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+    //     },
+    //     json: {
+    //       tx_ref: reference,
+    //       amount: depositAmount,
+    //       currency: "NGN",
+    //       payment_options: "card",
+    //       redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
+    //       meta: {
+    //         consumer_id: 23,
+    //         consumer_mac: "92a3-912ba-1192a",
+    //       },
+    //       customer: {
+    //         email: toEmail,
+    //         phonenumber: mobileNumber,
+    //         name: fullname,
+    //       },
+    //       customizations: {
+    //         title: "Fluttersave",
+    //         logo: "",
+    //       },
+    //     },
+    //   })
+    //   .json();
+
+    // return {
+    //   status: response.status,
+    //   link: response.data.link,
+    // };
+    
+    return response.data.data.link;
   } catch (err) {
     console.log(err.code);
     console.log(err.response.body);
