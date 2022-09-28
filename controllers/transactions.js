@@ -67,8 +67,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     if (
       payload.data.status === "successful" &&
-      payload.data.currency === "NGN" &&
-      payload.event.type === "CARD_TRANSACTION"
+      payload.data.currency === "NGN"
+      // &&
+      // payload.event.type === "CARD_TRANSACTION"
     ) {
       // Success! Confirm the customer's payment
       const transferResult = await Promise.all([
@@ -78,7 +79,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           purpose: "deposit",
           reference: payload.data.tx_ref,
           trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-          session,
+          session: null,
         }),
       ]);
 
