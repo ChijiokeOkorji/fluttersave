@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
-// const got = require("got");
-const axios = require('axios');
+const got = require("got");
+// const axios = require('axios');
 // const Flutterwave = require("flutterwave-node-v3");
 
 // const flw = new Flutterwave(
@@ -28,7 +28,7 @@ const creditAccount = async ({
 
   const updatedUser = await User.findOneAndUpdate(
     { email },
-    { $inc: { totalBalance: amount } },
+    { $inc: { balance: amount } },
     { session }
   );
 
@@ -38,8 +38,8 @@ const creditAccount = async ({
     amount,
     userEmail: email,
     reference,
-    balanceBefore: Number(existingUser.totalBalance),
-    balanceAfter: Number(existingUser.totalBalance) + Number(amount),
+    balanceBefore: Number(existingUser.balance),
+    balanceAfter: Number(existingUser.balance) + Number(amount),
     trnxSummary,
   });
 
@@ -75,7 +75,7 @@ const debitAccount = async ({
     };
   }
 
-  if (Number(existingUser.totalBalance) < amount) {
+  if (Number(existingUser.balance) < amount) {
     return {
       status: false,
       statusCode: 400,
@@ -85,7 +85,7 @@ const debitAccount = async ({
 
   const updatedUser = await User.findOneAndUpdate(
     { email },
-    { $inc: { totalBalance: -amount } },
+    { $inc: { balance: -amount } },
     { session }
   );
   const transaction = new Transaction({
@@ -94,8 +94,8 @@ const debitAccount = async ({
     amount,
     userEmail: email,
     reference,
-    balanceBefore: Number(existingUser.totalBalance),
-    balanceAfter: Number(existingUser.totalBalance) - Number(amount),
+    balanceBefore: Number(existingUser.balance),
+    balanceAfter: Number(existingUser.balance) - Number(amount),
     trnxSummary,
   });
 
@@ -152,64 +152,64 @@ const cardDeposit = async ({
   reference
 }) => {
   try {
-    const response = await axios.post("https://api.flutterwave.com/v3/payments", {
-      tx_ref: reference,
-      amount: depositAmount,
-      currency: "NGN",
-      redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
-      meta: {
-        consumer_id: 23,
-        consumer_mac: "92a3-912ba-1192a"
-      },
-      customer: {
-        email: toEmail,
-        phone_number: mobileNumber,
-        name: fullName
-      },
-      customizations: {
-        title: "Fluttersave",
-        logo: ""
-      }
-    }, {
-      headers: {
-        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
-      }
-    });
+    // const response = await axios.post("https://api.flutterwave.com/v3/payments", {
+    //   tx_ref: reference,
+    //   amount: depositAmount,
+    //   currency: "NGN",
+    //   redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
+    //   meta: {
+    //     consumer_id: 23,
+    //     consumer_mac: "92a3-912ba-1192a"
+    //   },
+    //   customer: {
+    //     email: toEmail,
+    //     phone_number: mobileNumber,
+    //     name: fullName
+    //   },
+    //   customizations: {
+    //     title: "Fluttersave",
+    //     logo: ""
+    //   }
+    // }, {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+    //   }
+    // });
 
-    // const response = await got
-    //   .post("https://api.flutterwave.com/v3/payments", {
-    //     headers: {
-    //       Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
-    //     },
-    //     json: {
-    //       tx_ref: reference,
-    //       amount: depositAmount,
-    //       currency: "NGN",
-    //       payment_options: "card",
-    //       redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
-    //       meta: {
-    //         consumer_id: 23,
-    //         consumer_mac: "92a3-912ba-1192a",
-    //       },
-    //       customer: {
-    //         email: toEmail,
-    //         phonenumber: mobileNumber,
-    //         name: fullName,
-    //       },
-    //       customizations: {
-    //         title: "Fluttersave",
-    //         logo: "",
-    //       },
-    //     },
-    //   })
-    //   .json();
+    // return response.data.data.link;
 
-    // return {
-    //   status: response.status,
-    //   link: response.data.link,
-    // };
+    const response = await got
+      .post("https://api.flutterwave.com/v3/payments", {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+        },
+        json: {
+          tx_ref: reference,
+          amount: depositAmount,
+          currency: "NGN",
+          payment_options: "card",
+          redirect_url: "https://fluttersave.herokuapp.com/home",
+          meta: {
+            consumer_id: 23,
+            consumer_mac: "92a3-912ba-1192a",
+          },
+          customer: {
+            email: toEmail,
+            phonenumber: mobileNumber,
+            name: fullName,
+          },
+          customizations: {
+            title: "Fluttersave",
+            logo: "",
+          },
+        },
+      })
+      .json();
 
-    return response.data.data.link;
+    return {
+      status: response.status,
+      link: response.data.link,
+    };
   } catch (err) {
     console.log(err.code);
     console.log(err.response.body);
