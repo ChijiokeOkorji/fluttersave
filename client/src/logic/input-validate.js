@@ -38,8 +38,7 @@ function doesItMatch(input1, input2) {
   return false;
 }
 
-export { 
-  isNameValid,
+export {
   isEmailValid,
   isPhoneNumberValid,
   isValueEntered,
