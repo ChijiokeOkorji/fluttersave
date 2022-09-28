@@ -61,7 +61,7 @@ const DepositForm = () => {
         depositAmount: '5000'
       });
   
-      console.log(data);
+      console.log(response);
 
       setRedirectLink(response.data.link);
       setRedirect(true);
