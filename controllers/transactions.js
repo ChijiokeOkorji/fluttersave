@@ -79,44 +79,44 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     const payload = req.body;
     // It's a good idea to log all received events.
 
-    // if (
-    //   payload.data.status === "successful" &&
-    //   response.data.currency === "NGN"
-    // ) {
-    //   // Success! Confirm the customer's payment
-    //   const transferResult = await Promise.all([
-    //     creditAccount({
-    //       amount,
-    //       email: payload.data.customer.email,
-    //       purpose: "deposit",
-    //       reference: payload.data.tx_ref,
-    //       trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-    //       session,
-    //     }),
-    //   ]);
+    if (
+      payload.data.status === "successful" &&
+      response.data.currency === "NGN"
+    ) {
+      // Success! Confirm the customer's payment
+      const transferResult = await Promise.all([
+        creditAccount({
+          amount,
+          email: payload.data.customer.email,
+          purpose: "deposit",
+          reference: payload.data.tx_ref,
+          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
+          session,
+        }),
+      ]);
 
-    //   const failedTxns = transferResult.filter(
-    //     (result) => result.status !== true
-    //   );
-    //   if (failedTxns.length) {
-    //     const errors = failedTxns.map((a) => a.message);
-    //     await session.abortTransaction();
-    //     return res.status(400).json({
-    //       status: false,
-    //       message: errors,
-    //     });
-    //   }
+      const failedTxns = transferResult.filter(
+        (result) => result.status !== true
+      );
+      if (failedTxns.length) {
+        const errors = failedTxns.map((a) => a.message);
+        await session.abortTransaction();
+        return res.status(400).json({
+          status: false,
+          message: errors,
+        });
+      }
 
-    //   return res.status(201).json({
-    //     status: true,
-    //     message: "Transfer successful",
-    //   });
-    // } else {
-    //   return res.status(401).json({
-    //     status: true,
-    //     message: "Transfer failed",
-    //   });
-    // }
+      return res.status(201).json({
+        status: true,
+        message: "Transfer successful",
+      });
+    } else {
+      return res.status(401).json({
+        status: true,
+        message: "Transfer failed",
+      });
+    }
   } catch (err) {
     return res.status(500).json({
       status: false,
