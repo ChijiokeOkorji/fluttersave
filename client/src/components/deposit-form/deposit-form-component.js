@@ -68,6 +68,8 @@ const DepositForm = () => {
     } catch(err) {
       setIsLoading(false);
 
+      console.log(err)
+
       // setServerError(err.response.data.message);
 
       setTimeout(() => {
