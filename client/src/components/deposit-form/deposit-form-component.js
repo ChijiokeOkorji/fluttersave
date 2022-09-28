@@ -54,14 +54,16 @@ const DepositForm = () => {
     try {
       setIsLoading(true);
 
-      const data = await axios.post('/fluttersave/deposit', {
+      const response = await axios.post('/fluttersave/deposit', {
         fullname: 'John Doe',
         toEmail: 'johndoe@anonymous.com',
         mobileNumber: '(+234) 1234567890',
         depositAmount: '5000'
       });
   
-      setRedirectLink(data.data.link);
+      console.log(data);
+
+      setRedirectLink(response.data.link);
       setRedirect(true);
 
       // dispatch(login(data.data));
