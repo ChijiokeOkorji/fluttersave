@@ -89,7 +89,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           purpose: "deposit",
           reference: payload.data.tx_ref,
           trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-          session,
+          session: null,
         }),
       ]);
 
