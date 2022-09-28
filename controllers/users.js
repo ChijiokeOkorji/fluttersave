@@ -28,7 +28,7 @@ const register = asyncWraper(async (req, res) => {
   return res.status(200).json({
     "First Name": newUser.firstName,
     "Last Name": newUser.lastName,
-    "Email": newUser.email,
+    Email: newUser.email,
     "Phone Number": newUser.phoneNumber,
   });
 });
@@ -48,8 +48,8 @@ const login = asyncWraper(async (req, res) => {
     return res.status(200).json({
       "First Name": user.firstName,
       "Last Name": user.lastName,
-      "Email": user.email,
-      "Phone Number": user.phoneNumber
+      Email: user.email,
+      "Phone Number": user.phoneNumber,
     });
   } else {
     return res.status(400).json({ message: "Incorrect user credentials" });
@@ -62,12 +62,12 @@ const balance = asyncWraper(async (req, res) => {
   const user = await User.findOne({ email });
 
   return res.status(200).json({
-    "Balance": parseFloat(user?.balance)
+    Balance: parseFloat(user?.balance),
   });
 });
 
 module.exports = {
   register,
   login,
-  balance
+  balance,
 };

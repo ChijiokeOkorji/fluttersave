@@ -18,16 +18,6 @@ const transactionSchema = new Schema(
       required: true,
       default: 0.0,
     },
-    startLockDate: {
-      type: Date,
-      required: true,
-      default: Date.now,
-    },
-    endLockDate: {
-      type: Date,
-      required: true,
-      default: Date.now,
-    },
     userEmail: {
       type: String,
       ref: "User",
