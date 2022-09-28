@@ -93,27 +93,29 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         }),
       ]);
 
-      const failedTxns = transferResult.filter(
-        (result) => result.status !== true
-      );
-      if (failedTxns.length) {
-        const errors = failedTxns.map((a) => a.message);
-        await session.abortTransaction();
-        return res.status(400).json({
-          status: false,
-          message: errors,
-        });
-      }
+      console.log(transferResult);
 
-      return res.status(201).json({
-        status: true,
-        message: "Transfer successful",
-      });
+      // const failedTxns = transferResult.filter(
+      //   (result) => result.status !== true
+      // );
+      // if (failedTxns.length) {
+      //   const errors = failedTxns.map((a) => a.message);
+      //   await session.abortTransaction();
+      //   return res.status(400).json({
+      //     status: false,
+      //     message: errors,
+      //   });
+      // }
+
+      // return res.status(201).json({
+      //   status: true,
+      //   message: "Transfer successful",
+      // });
     } else {
-      return res.status(401).json({
-        status: true,
-        message: "Transfer failed",
-      });
+      // return res.status(401).json({
+      //   status: true,
+      //   message: "Transfer failed",
+      // });
     }
   } catch (err) {
     return res.status(500).json({
