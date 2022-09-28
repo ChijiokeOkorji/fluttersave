@@ -7,7 +7,7 @@ const {
   debitAccount,
   cardDeposit,
   bankWithdrawal,
-  fundAccount
+  fundAccount,
 } = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
@@ -90,7 +90,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       // );
       // if (failedTxns.length) {
       //   const errors = failedTxns.map((a) => a.message);
-        
+
       //   return res.status(400).json({
       //     status: false,
       //     message: errors,
@@ -102,45 +102,45 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       const txAmount = payload.data.amount;
       const txReference = payload.data.tx_ref;
 
-      const existingUser = await User.findOne({ csEmail });
+      //     const existingUser = await User.findOne({ csEmail });
 
-      if (!existingUser) {
-        return {
-          status: false,
-          statusCode: 404,
-          message: `User ${csEmail} doesn't exist`,
-        };
-      }
+      //     if (!existingUser) {
+      //       return {
+      //         status: false,
+      //         statusCode: 404,
+      //         message: `User ${csEmail} doesn't exist`,
+      //       };
+      //     }
 
-      const updatedUser = await User.findOneAndUpdate(
-        { csEmail },
-        { $inc: { balance: txAmount } }
-      );
+      //     const updatedUser = await User.findOneAndUpdate(
+      //       { csEmail },
+      //       { $inc: { balance: txAmount } }
+      //     );
 
-      const transaction = new Transaction({
-        trnxType: "CR",
-        purpose,
-        txAmount,
-        userEmail: csEmail,
-        txReference,
-        balanceBefore: Number(existingUser.balance),
-        balanceAfter: Number(existingUser.balance) + Number(txAmount),
-        trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
-      });
+      //     const transaction = new Transaction({
+      //       trnxType: "CR",
+      //       purpose,
+      //       txAmount,
+      //       userEmail: csEmail,
+      //       txReference,
+      //       balanceBefore: Number(existingUser.balance),
+      //       balanceAfter: Number(existingUser.balance) + Number(txAmount),
+      //       trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
+      //     });
 
-    updatedUser.transactions.push(transaction);
-    await transaction.save();
-    await updatedUser.save();
+      //   updatedUser.transactions.push(transaction);
+      //   await transaction.save();
+      //   await updatedUser.save();
 
-  // console.log(transaction);
+      // // console.log(transaction);
 
-  console.log(`Credit successful`);
-  // return {
-  //   status: true,
-  //   statusCode: 201,
-  //   message: "Credit successful",
-  //   data: { updatedUser, transaction },
-  // };
+      console.log(`Credit successful`);
+      // return {
+      //   status: true,
+      //   statusCode: 201,
+      //   message: "Credit successful",
+      //   data: { updatedUser, transaction },
+      // };
 
       return res.status(201).json({
         status: true,
