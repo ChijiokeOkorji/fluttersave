@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const Transaction = require("../models/transaction");
 const { v4 } = require("uuid");
 const {
   creditAccount,
@@ -96,8 +97,50 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       //   });
       // }
 
-      console.log(payload.data.customer.email);
-      console.log(payload.data.tx_ref)
+      const csEmail = payload.data.customer.email;
+      const userName = payload.data.customer.name;
+      const txAmount = payload.data.amount;
+      const txReference = payload.data.tx_ref;
+
+      const existingUser = await User.findOne({ csEmail });
+
+      if (!existingUser) {
+        return {
+          status: false,
+          statusCode: 404,
+          message: `User ${csEmail} doesn't exist`,
+        };
+      }
+
+      const updatedUser = await User.findOneAndUpdate(
+        { csEmail },
+        { $inc: { balance: txAmount } }
+      );
+
+      const transaction = new Transaction({
+        trnxType: "CR",
+        purpose,
+        txAmount,
+        userEmail: csEmail,
+        txReference,
+        balanceBefore: Number(existingUser.balance),
+        balanceAfter: Number(existingUser.balance) + Number(txAmount),
+        trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
+      });
+
+    updatedUser.transactions.push(transaction);
+    await transaction.save();
+    await updatedUser.save();
+
+  // console.log(transaction);
+
+  console.log(`Credit successful`);
+  // return {
+  //   status: true,
+  //   statusCode: 201,
+  //   message: "Credit successful",
+  //   data: { updatedUser, transaction },
+  // };
 
       return res.status(201).json({
         status: true,
