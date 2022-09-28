@@ -37,12 +37,12 @@ const creditAccount = async ({
     amount,
     userEmail: email,
     reference,
-    balanceBefore: Number(existingUser.totalBalance),
-    balanceAfter: Number(existingUser.totalBalance) + Number(amount),
+    balanceBefore: Number(existingUser.balance),
+    balanceAfter: Number(existingUser.balance) + Number(amount),
     trnxSummary,
   });
 
-  updatedUser.userTransactions.push(transaction);
+  updatedUser.transactions.push(transaction);
   await transaction.save({ session });
   await updatedUser.save();
 
@@ -98,7 +98,7 @@ const debitAccount = async ({
     trnxSummary,
   });
 
-  updatedUser.userTransactions.push(transaction);
+  updatedUser.transactions.push(transaction);
   await transaction.save({ session });
   await updatedUser.save();
 
@@ -253,5 +253,5 @@ module.exports = {
   creditAccount,
   debitAccount,
   cardDeposit,
-  bankWithdrawal
+  bankWithdrawal,
 };

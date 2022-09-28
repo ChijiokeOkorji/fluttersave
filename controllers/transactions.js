@@ -15,7 +15,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
     const { fullname, mobileNumber, toEmail, depositAmount } = req.body;
     const reference = v4();
     const currency = "NGN";
-    if (!fullname && !mobileNumber && !depositAmount && !toEmail) {
+    if (!(fullname && mobileNumber && depositAmount && toEmail)) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
@@ -54,6 +54,8 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
 
 // verify transaction from the webhook and update the database
 const verifyWebhook = asyncWraper(async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const secretHash = process.env.FLW_SECRET_HASH;
     const signature = req.headers["verif-hash"];
@@ -79,41 +81,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           purpose: "deposit",
           reference: payload.data.tx_ref,
           trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-          session: null,
-        }),
-      ]);
-
-      const failedTxns = transferResult.filter(
-        (result) => result.status !== true
-      );
-      if (failedTxns.length) {
-        const errors = failedTxns.map((a) => a.message);
-
-        return res.status(400).json({
-          status: false,
-          message: errors,
-        });
-      }
-
-      return res.status(201).json({
-        status: true,
-        message: "deposit successful",
-      });
-    }
-
-    if (
-      payload.data.status === "SUCCESSFUL" &&
-      payload.data.currency === "NGN" &&
-      payload.event.type === "Transfer"
-    ) {
-      // Success! Confirm the customer's payment
-      const transferResult = await Promise.all([
-        debitAccount({
-          amount,
-          email: payload.data.customer.email,
-          purpose: "deposit",
-          reference: payload.data.tx_ref,
-          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
           session,
         }),
       ]);
@@ -123,22 +90,63 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       );
       if (failedTxns.length) {
         const errors = failedTxns.map((a) => a.message);
+        await session.abortTransaction();
         return res.status(400).json({
           status: false,
           message: errors,
         });
       }
 
+      await session.commitTransaction();
+      session.endSession();
+
       return res.status(201).json({
         status: true,
-        message: "Transfer successful",
+        message: "deposit successful",
       });
     }
+
+    // if (
+    //   payload.data.status === "SUCCESSFUL" &&
+    //   payload.data.currency === "NGN" &&
+    //   payload.event.type === "Transfer"
+    // ) {
+    //   // Success! Confirm the customer's payment
+    //   const transferResult = await Promise.all([
+    //     debitAccount({
+    //       amount,
+    //       email: payload.data.customer.email,
+    //       purpose: "deposit",
+    //       reference: payload.data.tx_ref,
+    //       trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
+    //       session,
+    //     }),
+    //   ]);
+
+    //   const failedTxns = transferResult.filter(
+    //     (result) => result.status !== true
+    //   );
+    //   if (failedTxns.length) {
+    //     const errors = failedTxns.map((a) => a.message);
+    //     return res.status(400).json({
+    //       status: false,
+    //       message: errors,
+    //     });
+    //   }
+
+    //   return res.status(201).json({
+    //     status: true,
+    //     message: "Transfer successful",
+    //   });
+    // }
     return res.status(401).json({
       status: true,
       message: "Transfer failed",
     });
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+
     return res.status(500).json({
       status: false,
       message: `Unable to perform transaction. Please try again. \n Error: ${err}`,
@@ -194,10 +202,10 @@ const withdrawal = asyncWraper(async (req, res) => {
 
 const userTransactions = asyncWraper(async (req, res) => {
   const user = await User.findById(req.params.id).populate({
-    path: "userTransactions",
+    path: "transactions",
     select: "trnxType purpose amount reference trnxSummary createdAt",
   });
-  res.status(201).json(user.userTransactions);
+  res.status(201).json(user.transactions);
 });
 
 module.exports = {
