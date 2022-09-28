@@ -1,13 +1,21 @@
 import { useCallback, useMemo, useState } from "react";
-// import { Navigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from '../../store/user';
+
+import axios from 'axios';
 
 import { isEmailValid, isValueEntered } from "../../logic/input-validate";
 
+import { Loading } from "../loading";
 import { Form } from "../form";
 import { InputField } from "../input-field";
 import { Button } from "../button";
 
-const LoginForm = () => {
+const LoginForm = ({ redirect }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: ''
@@ -27,6 +35,8 @@ const LoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const handleChange = useCallback((dataFromChild) => {
     setLoginData(prevUser => {
@@ -58,17 +68,36 @@ const LoginForm = () => {
     return false
   }, [validateInput]);
 
-  async function handleSignup() {
-    console.log(loginData);
-    console.log('User has logged in');
+  async function handleSubmit() {
+    try {
+      setIsLoading(true);
+
+      const data = await axios.post('/fluttersave/login', {...loginData});
+
+      dispatch(login(data.data));
+
+      navigate(redirect || "/home");
+    } catch(err) {
+      setIsLoading(false);
+
+      setServerError(err.response.data.message);
+
+      setTimeout(() => {
+        setServerError('');
+      }, 2000);
+    }
   }
 
   return (
-    <Form title="Sign In" onSubmit={handleSignup}>
+    <Form title="Sign In" onSubmit={handleSubmit} popup={serverError}>
       <InputField placeHolder="Email" value={loginData.email} onChange={handleChange} validateInput={validateInput.email} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid email address" />
       <InputField type="password" placeHolder="Password" value={loginData.confirmPassword} onChange={handleChange} validateInput={validateInput.password} setShouldValidate={setShouldValidate} showPassword={showPassword} setShowPassword={setShowPassword} errorMessage="Password cannot be blank" />
 
-      <Button label="Login" onClick={handleSignup} disabled={disableButton} />
+      <Button label="Login" disabled={disableButton} />
+
+      {isLoading &&
+        <Loading />
+      }
     </Form>
   );
 };

@@ -2,6 +2,56 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+// const userSchema = new Schema(
+//   {
+//     firstName: {
+//       type: String,
+//       required: true,
+//     },
+//     lastName: {
+//       type: String,
+//       required: true,
+//     },
+//     email: {
+//       type: String,
+//       required: true,
+//       index: true,
+//       match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+//       unique: true,
+//     },
+//     password: {
+//       type: String,
+//       required: true,
+//     },
+//     phoneNumber: {
+//       type: String,
+//       required: true,
+//     },
+//     currency: {
+//       type: String,
+//       default: "NGN",
+//       enum: ["NGN", "USD", "EUR", "GBP"],
+//     },
+//     totalBalance: {
+//       type: mongoose.Decimal128,
+//       required: true,
+//       default: 0.0,
+//     },
+//     availableBalance: {
+//       type: mongoose.Decimal128,
+//       required: true,
+//       default: 0.0,
+//     },
+//     userTransactions: [
+//       {
+//         type: Schema.Types.ObjectId,
+//         ref: "Transaction",
+//       },
+//     ],
+//   },
+//   { timestamps: true }
+// );
+
 const userSchema = new Schema(
   {
     firstName: {
@@ -19,11 +69,11 @@ const userSchema = new Schema(
       match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
       unique: true,
     },
-    password: {
+    phoneNumber: {
       type: String,
       required: true,
     },
-    phoneNumber: {
+    password: {
       type: String,
       required: true,
     },
@@ -32,17 +82,12 @@ const userSchema = new Schema(
       default: "NGN",
       enum: ["NGN", "USD", "EUR", "GBP"],
     },
-    totalBalance: {
+    balance: {
       type: mongoose.Decimal128,
       required: true,
       default: 0.0,
     },
-    availableBalance: {
-      type: mongoose.Decimal128,
-      required: true,
-      default: 0.0,
-    },
-    userTransactions: [
+    transactions: [
       {
         type: Schema.Types.ObjectId,
         ref: "Transaction",

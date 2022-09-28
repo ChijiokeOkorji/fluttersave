@@ -62,17 +62,8 @@ const App = () => {
 };
 
 // TODO
-// Entries title [DONE]
-// Entries design (history and profile)[DONE?]
-// History details page [DONE]
-// Dropdown menu (with query) [DONE]
-// Show name of valid account holder (input field) [DONE]
-// Popups [DONE]
-// Errors
-// Restricted pages (auth) [DONE]
-// Central store
-// Fullstack integration
+// Error page
 // Flutterwave integration
-// Lazy loading [DONE]
+// History
 
 export { App };

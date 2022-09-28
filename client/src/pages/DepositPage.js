@@ -1,12 +1,12 @@
 import { Main } from '../components/main';
 import { BackButton } from '../components/back-button';
-import { Nifemi } from '../components/nifemi';
+import { DepositForm } from '../components/deposit-form';
 
 const DepositPage = () => {
   return (
     <Main align="center">
       <BackButton />
-      <Nifemi />
+      <DepositForm />
     </Main>
   );
 };

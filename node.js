@@ -1,14 +1,7 @@
 require("dotenv").config();
 
-// const axios = require('axios');
 const express = require("express");
 const path = require("path");
-// const Flutterwave = require("flutterwave-node-v3");
-
-// const flw = new Flutterwave(
-//   process.env.FLW_PUBLIC_KEY,
-//   process.env.FLW_SECRET_KEY
-// );
 
 const connectDB = require("./db/connect");
 const userRoutes = require("./routes/users");
@@ -31,7 +24,8 @@ const PORT = process.env.PORT || 8080;
 
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URL);
+    connectDB(process.env.MONGO_URL);
+    
     app.listen(PORT, console.log(`Server started on port ${PORT}`));
   } catch (error) {
     console.log(error);
