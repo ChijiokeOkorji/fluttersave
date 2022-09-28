@@ -18,7 +18,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
   try {
     const { fullName, mobileNumber, toEmail, depositAmount } = req.body;
 
-    if (!fullName && !mobileNumber && !depositAmount && !toEmail) {
+    if (!fullName || !mobileNumber || !depositAmount || !toEmail) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
@@ -37,7 +37,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
       })
     ]);
 
-    const failedTxns = depositResult.filter((result) => result.status !== "success");
+    const failedTxns = depositResult.filter((result) => result.status !== 'success');
 
     if (failedTxns.length) {
       const errors = failedTxns.map((a) => a.message);
@@ -75,11 +75,10 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     const payload = req.body;
     // It's a good idea to log all received events.
-    console.log(payload);
 
     if (
       payload.data.status === "successful" &&
-      response.data.currency === "NGN"
+      payload.data.currency === "NGN"
     ) {
       // Success! Confirm the customer's payment
       const transferResult = await Promise.all([
@@ -94,6 +93,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       ]);
 
       console.log(transferResult);
+
 
       // const failedTxns = transferResult.filter(
       //   (result) => result.status !== true

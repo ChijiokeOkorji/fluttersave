@@ -208,6 +208,7 @@ const cardDeposit = async ({
 
     return {
       status: response.status,
+      message: response.message,
       link: response.data.link,
     };
   } catch (err) {
