@@ -62,7 +62,7 @@ const balance = asyncWraper(async (req, res) => {
   const user = await User.findOne({ email });
 
   return res.status(200).json({
-    "Balance": parseFloat(user.balance)
+    "Balance": parseFloat(user?.balance)
   });
 });
 

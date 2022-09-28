@@ -1,6 +1,6 @@
 import { Main } from '../components/main';
 import { BackButton } from '../components/back-button';
-import { DepositForm } from '../components/deposit-form';
+import { DepositForm } from '../components/nifemi';
 
 const DepositPage = () => {
   return (
