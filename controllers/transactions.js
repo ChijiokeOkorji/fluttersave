@@ -74,27 +74,30 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       // payload.event.type === "CARD_TRANSACTION"
     ) {
       // Success! Confirm the customer's payment
-      const transferResult = await Promise.all([
-        fundAccount({
-          amount,
-          email: payload.data.customer.email,
-          purpose: "deposit",
-          reference: payload.data.tx_ref,
-          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `
-        }),
-      ]);
+      // const transferResult = await Promise.all([
+      //   fundAccount({
+      //     amount,
+      //     email: payload.data.customer.email,
+      //     purpose: "deposit",
+      //     reference: payload.data.tx_ref,
+      //     trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `
+      //   }),
+      // ]);
 
-      const failedTxns = transferResult.filter(
-        (result) => result.status !== true
-      );
-      if (failedTxns.length) {
-        const errors = failedTxns.map((a) => a.message);
+      // const failedTxns = transferResult.filter(
+      //   (result) => result.status !== true
+      // );
+      // if (failedTxns.length) {
+      //   const errors = failedTxns.map((a) => a.message);
         
-        return res.status(400).json({
-          status: false,
-          message: errors,
-        });
-      }
+      //   return res.status(400).json({
+      //     status: false,
+      //     message: errors,
+      //   });
+      // }
+
+      console.log(payload.data.customer.email);
+      console.log(payload.data.tx_ref)
 
       return res.status(201).json({
         status: true,
