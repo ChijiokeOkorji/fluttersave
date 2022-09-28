@@ -65,17 +65,19 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
 
 const verifyWebhook = asyncWraper(async (req, res) => {
   try {
-    // const secretHash = process.env.FLW_SECRET_HASH;
-    // const signature = req.headers["verif-hash"];
+    const secretHash = process.env.FLW_SECRET_HASH;
+    const signature = req.headers["verif-hash"];
 
-    // if (!signature || signature !== secretHash) {
-    //   // This request isn't from Flutterwave; discard
-    //   return res.status(401).end();
-    // }
+    console.log("Signature", signature);
+    console.log("Secret Hash", secretHash);
+
+    if (!signature || signature !== secretHash) {
+      // This request isn't from Flutterwave; discard
+      return res.status(401).end();
+    }
 
     const payload = req.body;
     // It's a good idea to log all received events.
-    console.log(payload);
 
     // if (
     //   payload.data.status === "successful" &&
