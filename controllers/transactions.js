@@ -83,6 +83,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     ) {
       console.log("Event:", payload.event);
       console.log(payload);
+
+      return res.send('I am done');
       // Success! Confirm the customer's payment
       // const transferResult = await Promise.all([
       //   creditAccount({
