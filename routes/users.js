@@ -2,17 +2,15 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  renderRegister,
   register,
-  renderLogin,
   login,
-  logout,
+  balance
 } = require("../controllers/users");
 
-router.route("/register").get(renderRegister).post(register);
+router.route("/register").post(register);
 
-router.route("/login").get(renderLogin).post(login);
+router.route("/login").post(login);
 
-router.get("/logout", logout);
+router.route("/balance").post(balance);
 
 module.exports = router;

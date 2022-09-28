@@ -253,6 +253,5 @@ module.exports = {
   creditAccount,
   debitAccount,
   cardDeposit,
-  bankWithdrawal,
-  fundAccount,
+  bankWithdrawal
 };
