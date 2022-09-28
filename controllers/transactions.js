@@ -29,7 +29,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
 
     const depositResult = await Promise.all([
       cardDeposit({
-        fullname,
+        fullName,
         mobileNumber,
         depositAmount,
         toEmail,
@@ -48,14 +48,14 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
       });
     }
 
-    res.redirect(depositResult[0].link);
-    
+    return res.redirect(depositResult[0].link);
+
     console.log(depositResult);
 
-    return res.status(201).json({
-      status: true,
-      message: "Authorized",
-    });
+    // return res.status(201).json({
+    //   status: true,
+    //   message: "Authorized",
+    // });
   } catch (err) {
     return res.status(500).json({
       status: false,

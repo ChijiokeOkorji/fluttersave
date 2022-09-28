@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
 
+import { Loading } from "../loading";
 import { Form } from "../form";
 import { InputField } from "../input-field";
 import { Button } from "../button";
@@ -16,6 +17,9 @@ const DepositForm = () => {
     validationLogic: isAmountValid,
     isValid: isAmountValid(amount)
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const handleChange = useCallback((dataFromChild) => {
     for (let key in dataFromChild) {
@@ -46,30 +50,41 @@ const DepositForm = () => {
   // const [shouldRedirect, setShouldRedirect] = useState(false);
 
   async function handleSignup() {
-    // console.log(amount);
-    // console.log('User has logged in');
-    // setShouldRedirect(true);
+    try {
+      setIsLoading(true);
 
-    const data = await axios.post('/fluttersave/deposit', {
-      fullName: 'Chijioke Okorji',
-      toEmail: 'chijioke@gmail.com',
-      mobileNumber: '(+234) 8121231234',
-      depositAmount: '5000',
-      reference: 'tx_Ref'
-    });
+      const data = await axios.post('/fluttersave/deposit', {
+        fullName: 'John Doe',
+        toEmail: 'johndoe@anonymous.com',
+        mobileNumber: '(+234) 1234567890',
+        depositAmount: '5000'
+      });
+  
+      console.log('Received: ', data);
 
-    console.log('Received: ', data);
+      // dispatch(login(data.data));
+
+      // navigate(redirect || "/home");
+    } catch(err) {
+      setIsLoading(false);
+
+      // setServerError(err.response.data.message);
+
+      setTimeout(() => {
+        setServerError('');
+      }, 2000);
+    }
   }
 
   return (
-    <Form title="Card Deposit" onSubmit={handleSignup}>
+    <Form title="Card Deposit" onSubmit={handleSignup} popup={serverError}>
       <InputField type="amount" placeHolder="Amount" value={amount} onChange={handleChange} validateInput={validateAmount} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid amount" />
 
-      <Button label="Deposit" onClick={handleSignup} disabled={disableButton} />
+      <Button label="Deposit" disabled={disableButton} />
 
-      {/* {shouldRedirect &&
-        <Navigate to="/deposit/modal" />
-      } */}
+      {isLoading &&
+        <Loading />
+      }
     </Form>
   );
 };
