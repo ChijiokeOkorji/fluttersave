@@ -1,11 +1,3 @@
-function isNameValid(input) {
-  if ((/^\w+$/).test(input)) {
-    return true;
-  }
-
-  return false;
-}
-
 function isEmailValid(input) {
   if ((/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/).test(input)) {
     return true;

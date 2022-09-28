@@ -5,7 +5,7 @@ import { login } from '../../store/user';
 
 import axios from 'axios';
 
-import { isNameValid, isEmailValid, isPhoneNumberValid, isValueEntered, doesItMatch } from "../../logic/input-validate";
+import { isEmailValid, isPhoneNumberValid, isValueEntered, doesItMatch } from "../../logic/input-validate";
 
 import { Loading } from "../loading";
 import { Form } from "../form";
@@ -28,13 +28,13 @@ const SignUpForm = () => {
   const [validateInput, setValidateInput] = useState({
     firstName: {
       shouldValidate: false,
-      validationLogic: isNameValid,
-      isValid: isNameValid(newUserData.firstName)
+      validationLogic: isValueEntered,
+      isValid: isValueEntered(newUserData.firstName)
     },
     lastName: {
       shouldValidate: false,
-      validationLogic: isNameValid,
-      isValid: isNameValid(newUserData.lastName)
+      validationLogic: isValueEntered,
+      isValid: isValueEntered(newUserData.lastName)
     },
     email: {
       shouldValidate: false,

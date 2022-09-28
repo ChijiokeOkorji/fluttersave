@@ -112,10 +112,10 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       //   message: "Transfer successful",
       // });
     } else {
-      // return res.status(401).json({
-      //   status: true,
-      //   message: "Transfer failed",
-      // });
+      return res.status(401).json({
+        status: true,
+        message: "Transfer failed",
+      });
     }
   } catch (err) {
     return res.status(500).json({
