@@ -51,6 +51,55 @@ const creditAccount = async ({
   };
 };
 
+const fundAccount = async ({
+  amount,
+  email,
+  purpose,
+  reference,
+  trnxSummary,
+  session,
+}) => {
+  existingUser = await User.findOne({ email });
+  if (!existingUser) {
+    return {
+      status: false,
+      statusCode: 404,
+      message: `User ${email} doesn't exist`,
+    };
+  }
+
+  const updatedUser = await User.findOneAndUpdate(
+    { email },
+    { $inc: { totalBalance: amount } },
+    { session }
+  );
+
+  const transaction = new Transaction({
+    trnxType: "CR",
+    purpose,
+    amount,
+    userEmail: email,
+    reference,
+    balanceBefore: Number(existingUser.totalBalance),
+    balanceAfter: Number(existingUser.totalBalance) + Number(amount),
+    trnxSummary,
+  });
+
+  updatedUser.userTransactions.push(transaction);
+  await transaction.save({ session });
+  await updatedUser.save();
+
+  // console.log(transaction);
+
+  console.log(`Credit successful`);
+  return {
+    status: true,
+    statusCode: 201,
+    message: "Credit successful",
+    data: { updatedUser, transaction },
+  };
+};
+
 const debitAccount = async ({
   amount,
   email,
@@ -189,4 +238,5 @@ module.exports = {
   debitAccount,
   cardDeposit,
   bankWithdrawal,
+  fundAccount,
 };
