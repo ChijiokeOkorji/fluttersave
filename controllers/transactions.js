@@ -121,7 +121,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
       const transaction = new Transaction({
         trnxType: "CR",
-        purpose,
+        purpose: "deposit",
         amount: txAmount,
         userEmail: csEmail,
         reference: txReference,
@@ -248,6 +248,67 @@ const userTransactions = asyncWraper(async (req, res) => {
   });
   res.status(201).json(user.transactions);
 });
+
+// const testRoute = asyncWraper(async (req, res) => {
+//   try {
+//     const csEmail = "kays@gmail.com";
+//     const userName = "michael kays";
+//     const txAmount = "5000";
+//     const txReference = "abcd-12345";
+
+//     console.log("wallet:", csEmail);
+
+//     const userWallet = await User.findOne({ email: csEmail });
+
+//     if (!userWallet) {
+//       return {
+//         status: false,
+//         statusCode: 404,
+//         message: `User ${csEmail} doesn't exist`,
+//       };
+//     }
+//     console.log(userWallet);
+//     const updatedUser = await User.findOneAndUpdate(
+//       { email: csEmail },
+//       { $inc: { balance: txAmount } }
+//     );
+
+//     const transaction = new Transaction({
+//       trnxType: "CR",
+//       purpose: "deposit",
+//       amount: txAmount,
+//       userEmail: csEmail,
+//       reference: txReference,
+//       balanceBefore: Number(userWallet.balance),
+//       balanceAfter: Number(userWallet.balance) + Number(txAmount),
+//       trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
+//     });
+
+//     updatedUser.transactions.push(transaction);
+//     await transaction.save();
+//     await updatedUser.save();
+
+//     console.log(transaction);
+
+//     console.log(`Credit successful`);
+//     // return {
+//     //   status: true,
+//     //   statusCode: 201,
+//     //   message: "Credit successful",
+//     //   data: { updatedUser, transaction },
+//     // };
+
+//     return res.status(201).json({
+//       status: true,
+//       message: "deposit successful",
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       status: false,
+//       message: `Unable to perform transaction. Please try again. \n Error: ${err}`,
+//     });
+//   }
+// });
 
 module.exports = {
   makeCardDeposit,
