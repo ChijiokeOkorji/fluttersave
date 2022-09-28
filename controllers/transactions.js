@@ -91,6 +91,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         })
       ]);
 
+      console.log(transferResult);
+      
       const failedTxns = transferResult.filter(
         (result) => result.status !== true
       );
@@ -103,6 +105,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         });
       }
 
+      console.log(transferResult);
       return res.status(201).json({
         status: true,
         message: payload.event,
