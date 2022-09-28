@@ -6,6 +6,7 @@ const {
   debitAccount,
   cardDeposit,
   bankWithdrawal,
+  fundAccount
 } = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
@@ -55,8 +56,6 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
 
 // verify transaction from the webhook and update the database
 const verifyWebhook = asyncWraper(async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
     const secretHash = process.env.FLW_SECRET_HASH;
     const signature = req.headers["verif-hash"];
@@ -76,13 +75,12 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     ) {
       // Success! Confirm the customer's payment
       const transferResult = await Promise.all([
-        creditAccount({
+        fundAccount({
           amount,
           email: payload.data.customer.email,
           purpose: "deposit",
           reference: payload.data.tx_ref,
-          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-          session,
+          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `
         }),
       ]);
 
@@ -91,15 +89,12 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       );
       if (failedTxns.length) {
         const errors = failedTxns.map((a) => a.message);
-        await session.abortTransaction();
+        
         return res.status(400).json({
           status: false,
           message: errors,
         });
       }
-
-      await session.commitTransaction();
-      session.endSession();
 
       return res.status(201).json({
         status: true,
@@ -145,9 +140,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       message: "Transfer failed",
     });
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
-
     return res.status(500).json({
       status: false,
       message: `Unable to perform transaction. Please try again. \n Error: ${err}`,
