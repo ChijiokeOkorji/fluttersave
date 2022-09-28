@@ -1,7 +1,6 @@
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 const got = require("got");
-// const axios = require('axios');
 // const Flutterwave = require("flutterwave-node-v3");
 
 // const flw = new Flutterwave(
@@ -9,61 +8,13 @@ const got = require("got");
 //   process.env.FLW_SECRET_KEY
 // );
 
-// const creditAccount = async ({
-//   amount,
-//   email,
-//   purpose,
-//   reference,
-//   trnxSummary,
-//   session,
-// }) => {
-//   existingUser = await User.findOne({ email });
-//   if (!existingUser) {
-//     return {
-//       status: false,
-//       statusCode: 404,
-//       message: `User ${email} doesn't exist`,
-//     };
-//   }
-
-//   const updatedUser = await User.findOneAndUpdate(
-//     { email },
-//     { $inc: { balance: amount } },
-//     { session }
-//   );
-
-//   const transaction = new Transaction({
-//     trnxType: "CR",
-//     purpose,
-//     amount,
-//     userEmail: email,
-//     reference,
-//     balanceBefore: Number(existingUser.balance),
-//     balanceAfter: Number(existingUser.balance) + Number(amount),
-//     trnxSummary,
-//   });
-
-//   updatedUser.userTransactions.push(transaction);
-//   await transaction.save({ session });
-//   await updatedUser.save();
-
-//   // console.log(transaction);
-
-//   console.log(`Credit successful`);
-//   return {
-//     status: true,
-//     statusCode: 201,
-//     message: "Credit successful",
-//     data: { updatedUser, transaction },
-//   };
-// };
-
 const creditAccount = async ({
   amount,
   email,
   purpose,
   reference,
-  trnxSummary
+  trnxSummary,
+  session,
 }) => {
   existingUser = await User.findOne({ email });
   if (!existingUser) {
@@ -76,7 +27,8 @@ const creditAccount = async ({
 
   const updatedUser = await User.findOneAndUpdate(
     { email },
-    { $inc: { balance: amount } }
+    { $inc: { totalBalance: amount } },
+    { session }
   );
 
   const transaction = new Transaction({
@@ -85,13 +37,13 @@ const creditAccount = async ({
     amount,
     userEmail: email,
     reference,
-    balanceBefore: Number(existingUser.balance),
-    balanceAfter: Number(existingUser.balance) + Number(amount),
+    balanceBefore: Number(existingUser.totalBalance),
+    balanceAfter: Number(existingUser.totalBalance) + Number(amount),
     trnxSummary,
   });
 
   updatedUser.userTransactions.push(transaction);
-  await transaction.save();
+  await transaction.save({ session });
   await updatedUser.save();
 
   // console.log(transaction);
@@ -166,7 +118,7 @@ const debitAccount = async ({
 //   expiry_year,
 //   currency,
 //   amount,
-//   fullName,
+//   fullname,
 //   email,
 //   tx_ref,
 // }) => {
@@ -177,7 +129,7 @@ const debitAccount = async ({
 //     expiry_year,
 //     currency,
 //     amount,
-//     fullName,
+//     fullname,
 //     email,
 //     tx_ref
 //   );
@@ -196,7 +148,7 @@ const cardDeposit = async ({
   mobileNumber,
   depositAmount,
   toEmail,
-  reference
+  reference,
 }) => {
   try {
     // const response = await axios.post("https://api.flutterwave.com/v3/payments", {
@@ -264,8 +216,43 @@ const cardDeposit = async ({
   }
 };
 
+const bankWithdrawal = async ({
+  reference,
+  amount,
+  summary,
+  accountNumber,
+  bankCode,
+}) => {
+  try {
+    const response = await got
+      .post("https://api.flutterwave.com/v3/transfers", {
+        headers: {
+          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+        },
+        json: {
+          account_bank: bankCode,
+          account_number: accountNumber,
+          amount: amount,
+          narration: summary,
+          currency: "NGN",
+          reference: reference,
+          callback_url: "https://www.flutterwave.com/ng/",
+          debit_currency: "NGN",
+        },
+      })
+      .json();
+
+    return { response };
+  } catch (err) {
+    console.log(err.code);
+    console.log(err.response.body);
+  }
+};
+
 module.exports = {
   creditAccount,
   debitAccount,
   cardDeposit,
+  bankWithdrawal,
+  fundAccount,
 };

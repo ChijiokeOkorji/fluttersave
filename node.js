@@ -16,8 +16,8 @@ app.use(express.static(path.join(__dirname, "client", "build")));
 app.use("/fluttersave/", userRoutes);
 app.use("/fluttersave/", transactionRoutes);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+app.get("/", (req, res) => {
+  res.send("Home page");
 });
 
 const PORT = process.env.PORT || 8080;
@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 8080;
 const start = async () => {
   try {
     connectDB(process.env.MONGO_URL);
-    
+
     app.listen(PORT, console.log(`Server started on port ${PORT}`));
   } catch (error) {
     console.log(error);

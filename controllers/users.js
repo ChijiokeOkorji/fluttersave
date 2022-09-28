@@ -25,13 +25,20 @@ const register = asyncWraper(async (req, res) => {
     password: hashedPassword,
   });
 
-  return res.status(200).json({
-    "First Name": newUser.firstName,
-    "Last Name": newUser.lastName,
-    "Email": newUser.email,
-    "Phone Number": newUser.phoneNumber,
-  });
+  // const userWallet = await Wallet.create({
+  //   firstName,
+  //   lastName,
+  //   email: email.toLowerCase(),
+  //   phoneNumber,
+  //   userId: newUser._id,
+  // });
+
+  res.status(200).json({ msg: "User successfully created" });
 });
+
+const renderLogin = (req, res) => {
+  res.send("login form");
+};
 
 const login = asyncWraper(async (req, res) => {
   const { email, password } = req.body;
@@ -45,29 +52,18 @@ const login = asyncWraper(async (req, res) => {
   const correctPassword = await bcrypt.compare(password, user.password);
 
   if (correctPassword) {
-    return res.status(200).json({
-      "First Name": user.firstName,
-      "Last Name": user.lastName,
-      "Email": user.email,
-      "Phone Number": user.phoneNumber
-    });
+    res.status(400).json({ msg: "successfully logged in" });
   } else {
     return res.status(400).json({ message: "Incorrect user credentials" });
   }
 });
 
-const balance = asyncWraper(async (req, res) => {
-  const { email } = req.body;
-
-  const user = await User.findOne({ email });
-
-  return res.status(200).json({
-    "Balance": parseFloat(user?.balance)
-  });
-});
+const logout = (req, res) => {
+  res.send("logout successful");
+};
 
 module.exports = {
   register,
   login,
-  balance
+  logout,
 };

@@ -7,13 +7,17 @@ const Transaction = require("../models/transaction");
 //   process.env.FLW_SECRET_KEY
 // );
 
-const axios = require('axios');
-
 const mongoose = require("mongoose");
 const { v4 } = require("uuid");
-const { creditAccount, cardDeposit } = require("../utils/transactions");
+const {
+  creditAccount,
+  debitAccount,
+  cardDeposit,
+  bankWithdrawal,
+} = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
+// Card deposit controller
 const makeCardDeposit = asyncWraper(async (req, res) => {
   try {
     const { fullName, mobileNumber, toEmail, depositAmount } = req.body;
@@ -34,10 +38,12 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
         depositAmount,
         toEmail,
         reference,
-      })
+      }),
     ]);
 
-    const failedTxns = depositResult.filter((result) => result.status !== 'success');
+    const failedTxns = depositResult.filter(
+      (result) => result.status !== "success"
+    );
 
     if (failedTxns.length) {
       const errors = failedTxns.map((a) => a.message);
@@ -48,13 +54,12 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
       });
     }
 
-    // return res.redirect(depositResult[0].link);
+    return res.redirect(depositResult[0].link);
 
-    return res.status(201).json({
-      status: true,
-      message: "Authorized",
-      link: depositResult[0].link
-    });
+    // return res.status(201).json({
+    //   status: true,
+    //   message: "Authorized",
+    // });
   } catch (err) {
     return res.status(500).json({
       status: false,
@@ -63,6 +68,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
   }
 });
 
+// verify transaction from the webhook and update the database
 const verifyWebhook = asyncWraper(async (req, res) => {
   try {
     const secretHash = process.env.FLW_SECRET_HASH;
@@ -78,7 +84,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     if (
       payload.data.status === "successful" &&
-      payload.data.currency === "NGN"
+      response.data.currency === "NGN"
     ) {
       // Success! Confirm the customer's payment
       const transferResult = await Promise.all([
@@ -87,8 +93,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           email: payload.data.customer.email,
           purpose: "deposit",
           reference: payload.data.tx_ref,
-          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `
-        })
+          trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
+          session,
+        }),
       ]);
 
       console.log(transferResult);
@@ -111,65 +118,24 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       });
     } else {
       return res.status(401).json({
-        status: false,
-        message: payload.event,
-      });
+        status: true,
+        message: "Transfer failed",
+      }); // Inform the customer their payment was unsuccessful
     }
+
+    return res.status(200).json({
+      status: debitResult.status,
+      message: debitResult.message,
+    });
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: `Unable to fund wallet. Please try again. \n Error: ${err}`,
+      message: `Unable to make card Deposit. Please try again. \n Error: ${err}`,
     });
   }
 });
 
-module.exports = { makeCardDeposit, verifyWebhook };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const response = await axios.post("https://api.flutterwave.com/v3/payments", {
-//   tx_ref: reference,
-//   amount: depositAmount,
-//   currency: "NGN",
-//   redirect_url: "http://localhost:8080/fluttersave/verify-deposit",
-//   meta: {
-//     consumer_id: 23,
-//     consumer_mac: "92a3-912ba-1192a"
-//   },
-//   customer: {
-//     email: toEmail,
-//     phone_number: mobileNumber,
-//     name: fullName
-//   },
-//   customizations: {
-//     title: "Fluttersave",
-//     logo: ""
-//   }
-// }, {
-//   headers: {
-//     Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
-//   }
+// const bankWithdrawal = asyncWraper(async () => {
+//   const { fromEmail, amount, summary } = req.body;
 // });
-
-// return res.send(response.data.data.link);
+module.exports = { makeCardDeposit, verifyWebhook };
