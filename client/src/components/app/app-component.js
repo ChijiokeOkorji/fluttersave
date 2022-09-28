@@ -65,5 +65,7 @@ const App = () => {
 // Error page
 // Flutterwave integration
 // History
+// NOTE: Convert all backend instances of email toLowerCase()
+// Frequency of GET /balance
 
 export { App };
