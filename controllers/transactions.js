@@ -92,13 +92,12 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       ]);
 
       console.log(transferResult);
-      
+
       const failedTxns = transferResult.filter(
         (result) => result.status !== true
       );
       if (failedTxns.length) {
         const errors = failedTxns.map((a) => a.message);
-        await session.abortTransaction();
         return res.status(400).json({
           status: false,
           message: errors,
