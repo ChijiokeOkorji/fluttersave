@@ -55,7 +55,7 @@ const DepositForm = () => {
       setIsLoading(true);
 
       const data = await axios.post('/fluttersave/deposit', {
-        fullName: 'John Doe',
+        fullname: 'John Doe',
         toEmail: 'johndoe@anonymous.com',
         mobileNumber: '(+234) 1234567890',
         depositAmount: '5000'
