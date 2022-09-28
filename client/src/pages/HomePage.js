@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { update } from '../store/balance';
@@ -8,7 +9,6 @@ import { Main } from '../components/main';
 import { Balance } from '../components/balance';
 import { ContainerRow } from '../components/container-row';
 import { Button } from '../components/button';
-import { useEffect } from 'react';
 
 const HomePage = () => {
   const dispatch = useDispatch();

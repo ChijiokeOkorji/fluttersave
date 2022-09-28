@@ -11,6 +11,6 @@ router.post("/transfer", transfer);
 
 router.post("/deposit", makeCardDeposit);
 
-// router.post("/fs-webhook", verifyWebhook);
+router.post("/fs-webhook", verifyWebhook);
 
 module.exports = router;
