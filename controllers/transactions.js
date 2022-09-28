@@ -102,16 +102,18 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       const txAmount = payload.data.amount;
       const txReference = payload.data.tx_ref;
 
-      const existingUser = await User.findOne({ csEmail });
+      console.log("wallet:", csEmail);
 
-      if (!existingUser) {
+      const userWallet = await User.findOne({ csEmail });
+
+      if (!userWallet) {
         return {
           status: false,
           statusCode: 404,
           message: `User ${csEmail} doesn't exist`,
         };
       }
-      console.log(existingUser);
+      console.log(userWallet);
       //     const updatedUser = await User.findOneAndUpdate(
       //       { csEmail },
       //       { $inc: { balance: txAmount } }
