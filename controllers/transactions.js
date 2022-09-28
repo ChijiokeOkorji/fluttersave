@@ -80,6 +80,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       payload.data.status === "successful" &&
       payload.data.currency === "NGN"
     ) {
+      console.log(payload);
       // Success! Confirm the customer's payment
       const transferResult = await Promise.all([
         creditAccount({
@@ -91,8 +92,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           session: null,
         }),
       ]);
-
-      console.log(transferResult);
 
 
       // const failedTxns = transferResult.filter(
