@@ -9,13 +9,61 @@ const got = require("got");
 //   process.env.FLW_SECRET_KEY
 // );
 
+// const creditAccount = async ({
+//   amount,
+//   email,
+//   purpose,
+//   reference,
+//   trnxSummary,
+//   session,
+// }) => {
+//   existingUser = await User.findOne({ email });
+//   if (!existingUser) {
+//     return {
+//       status: false,
+//       statusCode: 404,
+//       message: `User ${email} doesn't exist`,
+//     };
+//   }
+
+//   const updatedUser = await User.findOneAndUpdate(
+//     { email },
+//     { $inc: { balance: amount } },
+//     { session }
+//   );
+
+//   const transaction = new Transaction({
+//     trnxType: "CR",
+//     purpose,
+//     amount,
+//     userEmail: email,
+//     reference,
+//     balanceBefore: Number(existingUser.balance),
+//     balanceAfter: Number(existingUser.balance) + Number(amount),
+//     trnxSummary,
+//   });
+
+//   updatedUser.userTransactions.push(transaction);
+//   await transaction.save({ session });
+//   await updatedUser.save();
+
+//   // console.log(transaction);
+
+//   console.log(`Credit successful`);
+//   return {
+//     status: true,
+//     statusCode: 201,
+//     message: "Credit successful",
+//     data: { updatedUser, transaction },
+//   };
+// };
+
 const creditAccount = async ({
   amount,
   email,
   purpose,
   reference,
-  trnxSummary,
-  session,
+  trnxSummary
 }) => {
   existingUser = await User.findOne({ email });
   if (!existingUser) {
@@ -28,8 +76,7 @@ const creditAccount = async ({
 
   const updatedUser = await User.findOneAndUpdate(
     { email },
-    { $inc: { balance: amount } },
-    { session }
+    { $inc: { balance: amount } }
   );
 
   const transaction = new Transaction({
@@ -44,7 +91,7 @@ const creditAccount = async ({
   });
 
   updatedUser.userTransactions.push(transaction);
-  await transaction.save({ session });
+  await transaction.save();
   await updatedUser.save();
 
   // console.log(transaction);
