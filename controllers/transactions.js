@@ -104,7 +104,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
       console.log("wallet:", csEmail);
 
-      const userWallet = await User.findOne({ csEmail });
+      const userWallet = await User.findOne({ email: csEmail });
 
       if (!userWallet) {
         return {
