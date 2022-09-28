@@ -114,27 +114,27 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         };
       }
       console.log(userWallet);
-      //     const updatedUser = await User.findOneAndUpdate(
-      //       { csEmail },
-      //       { $inc: { balance: txAmount } }
-      //     );
+      const updatedUser = await User.findOneAndUpdate(
+        { email: csEmail },
+        { $inc: { balance: txAmount } }
+      );
 
-      //     const transaction = new Transaction({
-      //       trnxType: "CR",
-      //       purpose,
-      //       txAmount,
-      //       userEmail: csEmail,
-      //       txReference,
-      //       balanceBefore: Number(existingUser.balance),
-      //       balanceAfter: Number(existingUser.balance) + Number(txAmount),
-      //       trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
-      //     });
+      const transaction = new Transaction({
+        trnxType: "CR",
+        purpose,
+        amount: txAmount,
+        userEmail: csEmail,
+        reference: txReference,
+        balanceBefore: Number(userWallet.balance),
+        balanceAfter: Number(userWallet.balance) + Number(txAmount),
+        trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
+      });
 
-      //   updatedUser.transactions.push(transaction);
-      //   await transaction.save();
-      //   await updatedUser.save();
+      updatedUser.transactions.push(transaction);
+      await transaction.save();
+      await updatedUser.save();
 
-      // // console.log(transaction);
+      console.log(transaction);
 
       console.log(`Credit successful`);
       // return {
