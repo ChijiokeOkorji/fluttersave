@@ -1,10 +1,15 @@
+import { Navigate, useLocation } from "react-router-dom";
+
 import { Main } from '../components/main';
 import { PaymentModal } from '../components/payment-modal';
 
 const PaymentModalPage = () => {
+  const location = useLocation();
+  const src = location.state?.src;
+
   return (
     <Main align="center">
-      <PaymentModal src="https://ravemodal-dev.herokuapp.com/v3/hosted/pay/ae1dcdbf1d4bd21e191a" />
+      <PaymentModal src={src} />
     </Main>
   );
 };

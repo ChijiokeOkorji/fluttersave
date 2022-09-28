@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-// import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
@@ -47,7 +47,8 @@ const DepositForm = () => {
     return false
   }, [validateAmount]);
 
-  // const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+  const [redirectLink, setRedirectLink] = useState('');
 
   async function handleSignup() {
     try {
@@ -60,11 +61,10 @@ const DepositForm = () => {
         depositAmount: '5000'
       });
   
-      console.log('Received: ', data);
+      setRedirectLink(data.data.link);
+      setRedirect(true);
 
       // dispatch(login(data.data));
-
-      // navigate(redirect || "/home");
     } catch(err) {
       setIsLoading(false);
 
@@ -81,6 +81,10 @@ const DepositForm = () => {
       <InputField type="amount" placeHolder="Amount" value={amount} onChange={handleChange} validateInput={validateAmount} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid amount" />
 
       <Button label="Deposit" disabled={disableButton} />
+
+      {redirect &&
+        <Navigate to="/deposit/modal" replace state={{ src: redirectLink }} />
+      }
 
       {isLoading &&
         <Loading />

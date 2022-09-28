@@ -48,14 +48,13 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
       });
     }
 
-    return res.redirect(depositResult[0].link);
+    // return res.redirect(depositResult[0].link);
 
-    console.log(depositResult);
-
-    // return res.status(201).json({
-    //   status: true,
-    //   message: "Authorized",
-    // });
+    return res.status(201).json({
+      status: true,
+      message: "Authorized",
+      link: depositResult[0].link
+    });
   } catch (err) {
     return res.status(500).json({
       status: false,
@@ -71,7 +70,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     if (!signature || signature !== secretHash) {
       // This request isn't from Flutterwave; discard
-      res.status(401).end();
+      return res.status(401).end();
     }
 
     const payload = req.body;
