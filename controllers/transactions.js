@@ -67,23 +67,14 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     // It's a good idea to log all received events.
     console.log(payload);
 
-    const csEmail = payload.data?.customer.email;
-    const userName = payload.data?.customer.name;
-    const txAmount = payload.data?.amount;
-    const txReference = payload.data?.tx_ref;
+    const csEmail = payload.customer?.email;
+    const userName = payload.customer?.name;
+    const txAmount = payload.amount;
+    const txReference = payload.tx_ref;
     const debEmail = payload.transfer?.meta.email;
     const debtxReference = payload.transfer?.reference;
     const debAccountNum = payload.transfer?.account_number;
     const debAmount = payload.transfer?.amount;
-
-    console.log("csEmail: ", csEmail);
-    console.log("dbEmail: ", debEmail);
-    console.log("debtxReference: ", debtxReference);
-    console.log("debAccountNum: ", debAccountNum);
-    console.log("debAmount: ", debAmount);
-    console.log("userName: ", userName);
-    console.log("txAmount: ",txAmount);
-    console.log("txReference: ", txReference);
 
     // for collection webhook
     if (
