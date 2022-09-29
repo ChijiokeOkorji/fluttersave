@@ -67,6 +67,15 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     // It's a good idea to log all received events.
     console.log(payload);
 
+    console.log("csEmail: ", payload.data.customer.email);
+    console.log("dbEmail: ", payload.transfer.meta.email);
+    console.log("debtxReference: ", payload.transfer.reference);
+    console.log("debAccountNum: ", payload.transfer.account_number);
+    console.log("debAmount: ", payload.transfer.amount);
+    console.log("userName: ", payload.data.customer.name);
+    console.log("txAmount: ", payload.data.amount);
+    console.log("txReference: ", payload.data.tx_ref);
+
     const csEmail = payload.data.customer.email;
     const debEmail = payload.transfer.meta.email;
     const debtxReference = payload.transfer.reference;
@@ -75,15 +84,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     const userName = payload.data.customer.name;
     const txAmount = payload.data.amount;
     const txReference = payload.data.tx_ref;
-
-    console.log("csEmail: ", csEmail);
-    console.log("dbEmail: ", debEmail);
-    console.log("debtxReference: ", debtxReference);
-    console.log("debAccountNum: ", debAccountNum);
-    console.log("debAmount: ", debAmount);
-    console.log("userName: ", userName);
-    console.log("txAmount: ", txAmount);
-    console.log("txReference: ", txReference);
 
     // for collection webhook
     if (
