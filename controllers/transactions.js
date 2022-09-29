@@ -127,8 +127,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       payload.transfer.status === "SUCCESSFUL" &&
       payload.transfer.currency === "NGN"
     ) {
-      const existingUser = await User.findOne({ email: debEmail });
-      if (!existingUser) {
+      const dbUser = await User.findOne({ email: debEmail });
+      if (!dbUser) {
         return {
           status: false,
           statusCode: 404,
@@ -136,7 +136,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         };
       }
 
-      if (Number(existingUser.balance) < Number(debAmount)) {
+      if (Number(dbUser.balance) < Number(debAmount)) {
         return {
           status: false,
           statusCode: 400,
@@ -144,24 +144,26 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         };
       }
 
-      const updatedUser = await User.findOneAndUpdate(
+      const userUpdated = await User.findOneAndUpdate(
         { email: debEmail },
         { $inc: { balance: -debAmount } }
       );
-      const transaction = new Transaction({
+      const dbTransaction = new Transaction({
         trnxType: "DR",
         purpose: "withdrawal",
         amount: debAmount,
         userEmail: debEmail,
         reference: debtxReference,
-        balanceBefore: Number(existingUser.balance),
-        balanceAfter: Number(existingUser.balance) - Number(debAmount),
+        balanceBefore: Number(dbUser.balance),
+        balanceAfter: Number(dbUser.balance) - Number(debAmount),
         trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
       });
 
-      updatedUser.transactions.push(transaction);
-      await transaction.save();
-      await updatedUser.save();
+      userUpdated.transactions.push(dbTransaction);
+      await dbTransaction.save();
+      await userUpdated.save();
+
+      console.log(dbTransaction);
 
       console.log(`Debit successful`);
 
@@ -186,7 +188,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
-    const reference = "dfs23fhr7ntg0293039_PMCKDU_1";
+    const reference = `${v4()}_PMCKDU_1`;
     if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
       return res.status(400).json({
         status: false,
