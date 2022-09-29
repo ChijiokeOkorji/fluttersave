@@ -68,9 +68,10 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     console.log(payload);
 
     const csEmail = payload.data.customer.email;
-    const debEmail = payload.data.meta.email;
-    const debtxReference = payload.data.reference;
-    const debAccountNum = payload.data.account_number;
+    const debEmail = payload.transfer.meta.email;
+    const debtxReference = payload.transfer.reference;
+    const debAccountNum = payload.transfer.account_number;
+    const debAmount = payload.transfer.amount;
     const userName = payload.data.customer.name;
     const txAmount = payload.data.amount;
     const txReference = payload.data.tx_ref;
@@ -121,10 +122,10 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         message: "deposit successful",
       });
     }
-
+    // for payout webhook
     if (
-      payload.data.status === "SUCCESSFUL" &&
-      payload.data.currency === "NGN"
+      payload.transfer.status === "SUCCESSFUL" &&
+      payload.transfer.currency === "NGN"
     ) {
       const existingUser = await User.findOne({ email: debEmail });
       if (!existingUser) {
@@ -135,7 +136,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         };
       }
 
-      if (Number(existingUser.balance) < Number(txAmount)) {
+      if (Number(existingUser.balance) < Number(debAmount)) {
         return {
           status: false,
           statusCode: 400,
@@ -145,16 +146,16 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
       const updatedUser = await User.findOneAndUpdate(
         { email: debEmail },
-        { $inc: { balance: -txAmount } }
+        { $inc: { balance: -debAmount } }
       );
       const transaction = new Transaction({
         trnxType: "DR",
         purpose: "withdrawal",
-        amount: txAmount,
+        amount: debAmount,
         userEmail: debEmail,
         reference: debtxReference,
         balanceBefore: Number(existingUser.balance),
-        balanceAfter: Number(existingUser.balance) - Number(txAmount),
+        balanceAfter: Number(existingUser.balance) - Number(debAmount),
         trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
       });
 
@@ -163,12 +164,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       await updatedUser.save();
 
       console.log(`Debit successful`);
-      // return {
-      //   status: true,
-      //   statusCode: 201,
-      //   message: "withdrawal successful",
-      //   data: { updatedUser, transaction },
-      // };
 
       return res.status(201).json({
         status: true,
@@ -191,7 +186,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
-    const reference = "dfs23fhr7ntg0293045_PMCKDU_1";
+    const reference = "dfs23fhr7ntg0293048_PMCKDU_1";
     const currency = "NGN";
     if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
       return res.status(400).json({

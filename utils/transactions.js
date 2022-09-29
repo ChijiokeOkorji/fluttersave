@@ -27,7 +27,7 @@ const creditAccount = async ({
 
   const updatedUser = await User.findOneAndUpdate(
     { email },
-    { $inc: { totalBalance: amount } },
+    { $inc: { balance: amount } },
     { session }
   );
 
@@ -121,7 +121,7 @@ const debitAccount = async ({
     };
   }
 
-  if (Number(existingUser.balance) < amount) {
+  if (Number(existingUser.balance) < Number(amount)) {
     return {
       status: false,
       statusCode: 400,
@@ -157,38 +157,6 @@ const debitAccount = async ({
     data: { updatedUser, transaction },
   };
 };
-
-// const cardDeposit = async ({
-//   card_number,
-//   cvv,
-//   expiry_month,
-//   expiry_year,
-//   currency,
-//   amount,
-//   fullname,
-//   email,
-//   tx_ref,
-// }) => {
-//   const deposit = await flw.Charge.card(
-//     card_number,
-//     cvv,
-//     expiry_month,
-//     expiry_year,
-//     currency,
-//     amount,
-//     fullname,
-//     email,
-//     tx_ref
-//   );
-
-//   console.log("Deposit successful");
-//   return {
-//     status: true,
-//     statusCode: 201,
-//     message: "Deposit successful",
-//     data: { deposit },
-//   };
-// };
 
 const cardDeposit = async ({
   fullName,
@@ -284,7 +252,8 @@ const bankWithdrawal = async ({
           narration: summary,
           currency: "NGN",
           reference: reference,
-          callback_url: "https://www.flutterwave.com/ng/",
+          callback_url:
+            "https://webhook.site/91c8e065-1223-488a-8a19-464af49cb414",
           debit_currency: "NGN",
           meta: {
             email: fromEmail,
