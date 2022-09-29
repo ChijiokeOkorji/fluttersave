@@ -68,9 +68,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     console.log(payload);
 
     const csEmail = payload.customer?.email;
-    const userName = payload.customer?.name;
+    const userName = payload.customer?.fullName;
     const txAmount = payload.amount;
-    const txReference = payload.tx_ref;
+    const txReference = payload.txRef;
     const debEmail = payload.transfer?.meta.email;
     const debtxReference = payload.transfer?.reference;
     const debAccountNum = payload.transfer?.account_number;
@@ -78,8 +78,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     // for collection webhook
     if (
-      payload.data?.status === "successful" &&
-      payload.data?.currency === "NGN"
+      payload.status === "successful" &&
+      payload.currency === "NGN"
     ) {
       const userWallet = await User.findOne({ email: csEmail });
 
@@ -167,6 +167,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         message: "withdrawal successful",
       });
     }
+    
     return res.status(401).json({
       status: true,
       message: "Transfer failed",
