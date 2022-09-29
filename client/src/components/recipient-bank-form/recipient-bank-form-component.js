@@ -6,7 +6,6 @@ import { updateBank } from '../../store/bank';
 import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
-import axios from "axios";
 
 import { Loading } from "../loading";
 import { Form } from "../form";
