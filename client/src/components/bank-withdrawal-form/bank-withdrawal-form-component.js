@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBank } from '../../store/bank';
 
@@ -19,7 +19,7 @@ const BankWithdrawalForm = () => {
   const dispatch = useDispatch();
   const bankData = useSelector(store => store.bank);
   const userData = useSelector(store => store.user);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [accountName, setAccountName] = useState('');
 
@@ -132,11 +132,15 @@ const BankWithdrawalForm = () => {
         summary: recipientData.summary || ' '
       });
 
-      console.log(response.data);
+      setServerError(response.data.message);
 
-      // dispatch(login(response.data));
+      setIsLoading(false);
 
-      // navigate(redirect || "/home");
+      setTimeout(() => {
+        setServerError('');
+
+        navigate("/home");
+    }, 2000);
     } catch(err) {
       setIsLoading(false);
 

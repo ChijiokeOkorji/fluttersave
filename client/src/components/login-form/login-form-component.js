@@ -72,9 +72,9 @@ const LoginForm = ({ redirect }) => {
     try {
       setIsLoading(true);
 
-      const data = await axios.post('/fluttersave/login', {...loginData});
+      const response = await axios.post('/fluttersave/login', {...loginData});
 
-      dispatch(login(data.data));
+      dispatch(login(response.data));
 
       navigate(redirect || "/home");
     } catch(err) {

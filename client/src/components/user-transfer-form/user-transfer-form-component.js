@@ -68,21 +68,21 @@ const UserTransferForm = () => {
     try {
       setIsLoading(true);
 
-      const data = await axios.post('/fluttersave/transfer', {
+      const response = await axios.post('/fluttersave/transfer', {
         toEmail: recipientData.email,
         fromEmail: userData.Email,
         amount: recipientData.amount
       });
 
-      setServerError(data.data.message);
+      setServerError(response.data.message);
 
       setIsLoading(false);
 
       setTimeout(() => {
         setServerError('');
+
         navigate("/home");
     }, 2000);
-
     } catch(err) {
       setIsLoading(false);
 

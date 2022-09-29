@@ -97,9 +97,9 @@ const SignUpForm = () => {
     try {
       setIsLoading(true);
 
-      const data = await axios.post('/fluttersave/register', {...newUserData});
+      const response = await axios.post('/fluttersave/register', {...newUserData});
 
-      dispatch(login(data.data));
+      dispatch(login(response.data));
 
       navigate('/home');
     } catch(err) {
