@@ -76,12 +76,21 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     const txAmount = payload.data.amount;
     const txReference = payload.data.tx_ref;
 
+    console.log("csEmail: ", csEmail);
+    console.log("dbEmail: ", debEmail);
+    console.log("debtxReference: ", debtxReference);
+    console.log("debAccountNum: ", debAccountNum);
+    console.log("debAmount: ", debAmount);
+    console.log("userName: ", userName);
+    console.log("txAmount: ", txAmount);
+    console.log("txReference: ", txReference);
+
     // for collection webhook
     if (
       payload.data.status === "successful" &&
       payload.data.currency === "NGN"
     ) {
-      console.log("wallet:", csEmail);
+      // console.log("wallet:", csEmail);
 
       const userWallet = await User.findOne({ email: csEmail });
 
@@ -92,7 +101,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
           message: `User ${csEmail} doesn't exist`,
         };
       }
-      console.log(userWallet);
+      // console.log(userWallet);
       const updatedUser = await User.findOneAndUpdate(
         { email: csEmail },
         { $inc: { balance: txAmount } }
@@ -113,9 +122,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       await transaction.save();
       await updatedUser.save();
 
-      console.log(transaction);
+      // console.log(transaction);
 
-      console.log(`Credit successful`);
+      // console.log(`Credit successful`);
 
       return res.status(201).json({
         status: true,
@@ -124,7 +133,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     }
     // for payout webhook
 
-    console.log("Email: ", debEmail);
+    // console.log("Email: ", debEmail);
     if (
       payload.transfer.status === "SUCCESSFUL" &&
       payload.transfer.currency === "NGN"
