@@ -12,7 +12,6 @@ const SignUpPage = lazy(() => import('../../pages/SignUpPage'));
 const LoginPage = lazy(() => import('../../pages/LoginPage'));
 const HomePage = lazy(() => import('../../pages/HomePage'));
 const DepositPage = lazy(() => import('../../pages/DepositPage'));
-const PaymentModalPage = lazy(() => import('../../pages/PaymentModalPage'));
 const TransferDestinationPage = lazy(() => import('../../pages/TransferDestinationPage'));
 const BankWithdrawalPage = lazy(() => import('../../pages/BankWithdrawalPage'));
 const UserTransferPage = lazy(() => import('../../pages/UserTransferPage'));
@@ -39,21 +38,17 @@ const App = () => {
             }
           >
             <Route path="home" element={<HomePage />} />
-
-            <Route path="history">
-              <Route index element={<HistoryPage />} />
-              <Route path=":id" element={<HistoryDetailsPage />} />
-            </Route>
-
-            <Route path="deposit">
-              <Route index element={<DepositPage />} />
-              <Route path="modal" element={<PaymentModalPage />} />
-            </Route>
+            <Route path="deposit" element={<DepositPage />} />
 
             <Route path="send">
               <Route index element={<TransferDestinationPage />} />
               <Route path="user" element={<UserTransferPage />} />
               <Route path="bank" element={<BankWithdrawalPage />} />
+            </Route>
+
+            <Route path="history">
+              <Route index element={<HistoryPage />} />
+              <Route path=":id" element={<HistoryDetailsPage />} />
             </Route>
 
             <Route path="profile" element={<ProfilePage />} />

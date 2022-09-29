@@ -2,7 +2,6 @@ import { InputField } from '../input-field';
 import { Button } from '../button';
 import { Form } from '../form';
 
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import axios from 'axios';
@@ -13,7 +12,6 @@ import { isAmountValid } from "../../logic/input-validate";
 
 const DepositForm = () => {
     const userData = useSelector(store => store.user);
-    const navigate = useNavigate();
 
     const [amount, setAmount] = useState('');
 
@@ -63,7 +61,7 @@ const DepositForm = () => {
                 depositAmount: amount
             });
 
-            navigate("/deposit/modal", { state: { src: response.data.link }, replace: true });
+            window.location.href = response.data.link;
         } catch (err) {
             setIsLoading(false);
 
