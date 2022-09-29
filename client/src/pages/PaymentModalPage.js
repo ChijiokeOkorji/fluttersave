@@ -1,7 +1,7 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import { Main } from '../components/main';
-import { PaymentModal } from '../components/payment-modal';
+import { Main } from "../components/main";
+import { PaymentModal } from "../components/payment-modal";
 
 const PaymentModalPage = () => {
   const location = useLocation();
