@@ -62,7 +62,7 @@ const fundAccount = async ({
   email,
   purpose,
   reference,
-  trnxSummary
+  trnxSummary,
 }) => {
   existingUser = await User.findOne({ email });
   if (!existingUser) {
@@ -264,6 +264,7 @@ const cardDeposit = async ({
 };
 
 const bankWithdrawal = async ({
+  fromEmail,
   reference,
   amount,
   summary,
@@ -279,17 +280,21 @@ const bankWithdrawal = async ({
         json: {
           account_bank: bankCode,
           account_number: accountNumber,
-          amount: amount,
+          amount,
           narration: summary,
           currency: "NGN",
           reference: reference,
           callback_url: "https://www.flutterwave.com/ng/",
           debit_currency: "NGN",
+          meta: {
+            email: fromEmail,
+          },
         },
       })
       .json();
+    console.log(response);
 
-    return { response };
+    return { status: response.status, message: response.message };
   } catch (err) {
     console.log(err.code);
     console.log(err.response.body);
@@ -301,5 +306,5 @@ module.exports = {
   debitAccount,
   cardDeposit,
   bankWithdrawal,
-  fundAccount
+  fundAccount,
 };

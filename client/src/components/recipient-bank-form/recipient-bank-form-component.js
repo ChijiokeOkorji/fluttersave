@@ -6,6 +6,7 @@ import { updateBank } from '../../store/bank';
 import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
+import axios from "axios";
 
 import { Loading } from "../loading";
 import { Form } from "../form";
@@ -34,12 +35,12 @@ const RecipientBankForm = () => {
     amount: {
       shouldValidate: false,
       validationLogic: isAmountValid,
-      isValid: isAmountValid(recipientData.amount)
+      isValid: isAmountValid(recipientData.amount),
     },
     accountNumber: {
       shouldValidate: false,
-      isValid: false
-    }
+      isValid: false,
+    },
   });
 
   useEffect(() => {
@@ -96,9 +97,12 @@ const RecipientBankForm = () => {
   }, []);
 
   const setShouldValidate = useCallback((dataFromChild) => {
-    setValidateInput(prev => {
+    setValidateInput((prev) => {
       if (prev[dataFromChild].shouldValidate === false) {
-        return ({...prev, [dataFromChild]: {...prev[dataFromChild], shouldValidate: true}});
+        return {
+          ...prev,
+          [dataFromChild]: { ...prev[dataFromChild], shouldValidate: true },
+        };
       }
 
       return prev;
@@ -109,7 +113,7 @@ const RecipientBankForm = () => {
     if (!accountName) return true;
 
     for (let key in validateInput) {
-      if (!(validateInput[key].isValid)) {
+      if (!validateInput[key].isValid) {
         return true;
       }
     }

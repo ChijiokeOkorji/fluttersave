@@ -7,7 +7,7 @@ const {
   debitAccount,
   cardDeposit,
   bankWithdrawal,
-  fundAccount
+  fundAccount,
 } = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
@@ -61,86 +61,60 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     const secretHash = process.env.FLW_SECRET_HASH;
     const signature = req.headers["verif-hash"];
     if (!signature || signature !== secretHash) {
-      // This request isn't from Flutterwave; discard
       return res.status(401).end();
     }
     const payload = req.body;
     // It's a good idea to log all received events.
     console.log(payload);
 
+    const csEmail = payload.data.customer.email;
+    const debEmail = payload.data.meta.email;
+    const debtxReference = payload.data.reference;
+    const debAccountNum = payload.data.account_number;
+    const userName = payload.data.customer.name;
+    const txAmount = payload.data.amount;
+    const txReference = payload.data.tx_ref;
+
+    // for collection webhook
     if (
       payload.data.status === "successful" &&
       payload.data.currency === "NGN"
-      // &&
-      // payload.event.type === "CARD_TRANSACTION"
     ) {
-      // Success! Confirm the customer's payment
-      // const transferResult = await Promise.all([
-      //   fundAccount({
-      //     amount,
-      //     email: payload.data.customer.email,
-      //     purpose: "deposit",
-      //     reference: payload.data.tx_ref,
-      //     trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `
-      //   }),
-      // ]);
+      console.log("wallet:", csEmail);
 
-      // const failedTxns = transferResult.filter(
-      //   (result) => result.status !== true
-      // );
-      // if (failedTxns.length) {
-      //   const errors = failedTxns.map((a) => a.message);
-        
-      //   return res.status(400).json({
-      //     status: false,
-      //     message: errors,
-      //   });
-      // }
+      const userWallet = await User.findOne({ email: csEmail });
 
-      const csEmail = payload.data.customer.email;
-      const userName = payload.data.customer.name;
-      const txAmount = payload.data.amount;
-      const txReference = payload.data.tx_ref;
-
-      const existingUser = await User.findOne({ csEmail });
-
-      if (!existingUser) {
+      if (!userWallet) {
         return {
           status: false,
           statusCode: 404,
           message: `User ${csEmail} doesn't exist`,
         };
       }
-
+      console.log(userWallet);
       const updatedUser = await User.findOneAndUpdate(
-        { csEmail },
+        { email: csEmail },
         { $inc: { balance: txAmount } }
       );
 
       const transaction = new Transaction({
         trnxType: "CR",
-        purpose,
-        txAmount,
+        purpose: "deposit",
+        amount: txAmount,
         userEmail: csEmail,
-        txReference,
-        balanceBefore: Number(existingUser.balance),
-        balanceAfter: Number(existingUser.balance) + Number(txAmount),
+        reference: txReference,
+        balanceBefore: Number(userWallet.balance),
+        balanceAfter: Number(userWallet.balance) + Number(txAmount),
         trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
       });
 
-    updatedUser.transactions.push(transaction);
-    await transaction.save();
-    await updatedUser.save();
+      updatedUser.transactions.push(transaction);
+      await transaction.save();
+      await updatedUser.save();
 
-  // console.log(transaction);
+      console.log(transaction);
 
-  console.log(`Credit successful`);
-  // return {
-  //   status: true,
-  //   statusCode: 201,
-  //   message: "Credit successful",
-  //   data: { updatedUser, transaction },
-  // };
+      console.log(`Credit successful`);
 
       return res.status(201).json({
         status: true,
@@ -148,39 +122,59 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       });
     }
 
-    // if (
-    //   payload.data.status === "SUCCESSFUL" &&
-    //   payload.data.currency === "NGN" &&
-    //   payload.event.type === "Transfer"
-    // ) {
-    //   // Success! Confirm the customer's payment
-    //   const transferResult = await Promise.all([
-    //     debitAccount({
-    //       amount,
-    //       email: payload.data.customer.email,
-    //       purpose: "deposit",
-    //       reference: payload.data.tx_ref,
-    //       trnxSummary: `TRFR FROM: ${payload.data.customer.name}. TRNX REF:${payload.data.tx_ref} `,
-    //       session,
-    //     }),
-    //   ]);
+    if (
+      payload.data.status === "SUCCESSFUL" &&
+      payload.data.currency === "NGN"
+    ) {
+      const existingUser = await User.findOne({ email: debEmail });
+      if (!existingUser) {
+        return {
+          status: false,
+          statusCode: 404,
+          message: `User ${debEmail} doesn\'t exist`,
+        };
+      }
 
-    //   const failedTxns = transferResult.filter(
-    //     (result) => result.status !== true
-    //   );
-    //   if (failedTxns.length) {
-    //     const errors = failedTxns.map((a) => a.message);
-    //     return res.status(400).json({
-    //       status: false,
-    //       message: errors,
-    //     });
-    //   }
+      if (Number(existingUser.balance) < Number(txAmount)) {
+        return {
+          status: false,
+          statusCode: 400,
+          message: `User ${debEmail} has insufficient balance`,
+        };
+      }
 
-    //   return res.status(201).json({
-    //     status: true,
-    //     message: "Transfer successful",
-    //   });
-    // }
+      const updatedUser = await User.findOneAndUpdate(
+        { email: debEmail },
+        { $inc: { balance: -txAmount } }
+      );
+      const transaction = new Transaction({
+        trnxType: "DR",
+        purpose: "withdrawal",
+        amount: txAmount,
+        userEmail: debEmail,
+        reference: debtxReference,
+        balanceBefore: Number(existingUser.balance),
+        balanceAfter: Number(existingUser.balance) - Number(txAmount),
+        trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
+      });
+
+      updatedUser.transactions.push(transaction);
+      await transaction.save();
+      await updatedUser.save();
+
+      console.log(`Debit successful`);
+      // return {
+      //   status: true,
+      //   statusCode: 201,
+      //   message: "withdrawal successful",
+      //   data: { updatedUser, transaction },
+      // };
+
+      return res.status(201).json({
+        status: true,
+        message: "withdrawal successful",
+      });
+    }
     return res.status(401).json({
       status: true,
       message: "Transfer failed",
@@ -197,9 +191,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
-    const reference = "dfs23fhr7ntg0293039_PMCKDU_1";
+    const reference = "dfs23fhr7ntg0293045_PMCKDU_1";
     const currency = "NGN";
-    if (!fromEmail || !amount || !accountNumber || !bankCode || !summary) {
+    if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
@@ -208,6 +202,7 @@ const withdrawal = asyncWraper(async (req, res) => {
 
     const debitResult = await Promise.all([
       bankWithdrawal({
+        fromEmail,
         reference,
         amount,
         summary,
@@ -227,14 +222,11 @@ const withdrawal = asyncWraper(async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      status: debitResult.status,
-      message: debitResult.message,
-    });
+    return res.status(200).json(debitResult[0]);
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: `Unable to make card Deposit. Please try again. \n Error: ${err}`,
+      message: `Unable to make withdrawal. Please try again. \n Error: ${err}`,
     });
   }
 });
