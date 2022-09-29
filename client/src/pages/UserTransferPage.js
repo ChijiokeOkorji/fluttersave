@@ -1,12 +1,12 @@
 import { Main } from '../components/main';
 import { BackButton } from '../components/back-button';
-import { RecipientUserForm } from '../components/recipient-user-form';
+import { UserTransferForm } from '../components/user-transfer-form';
 
 const RecipientUserPage = () => {
   return (
     <Main align="center">
       <BackButton />
-      <RecipientUserForm />
+      <UserTransferForm />
     </Main>
   );
 };

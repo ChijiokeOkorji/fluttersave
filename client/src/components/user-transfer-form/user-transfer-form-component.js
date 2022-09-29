@@ -11,7 +11,7 @@ import { Form } from "../form";
 import { InputField } from "../input-field";
 import { Button } from "../button";
 
-const RecipientUserForm = () => {
+const UserTransferForm = () => {
   const userData = useSelector(store => store.user);
   const navigate = useNavigate();
 
@@ -108,4 +108,4 @@ const RecipientUserForm = () => {
   );
 };
 
-export { RecipientUserForm };
+export { UserTransferForm };

@@ -15,7 +15,7 @@ import { Button } from "../button";
 
 let source = new axios.CancelToken.source();// for cancelling axios requests
 
-const RecipientBankForm = () => {
+const BankWithdrawalForm = () => {
   const dispatch = useDispatch();
   const bankData = useSelector(store => store.bank);
   const userData = useSelector(store => store.user);
@@ -168,4 +168,4 @@ const RecipientBankForm = () => {
   );
 };
 
-export { RecipientBankForm };
+export { BankWithdrawalForm };

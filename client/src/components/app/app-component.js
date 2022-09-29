@@ -14,8 +14,8 @@ const HomePage = lazy(() => import('../../pages/HomePage'));
 const DepositPage = lazy(() => import('../../pages/DepositPage'));
 const PaymentModalPage = lazy(() => import('../../pages/PaymentModalPage'));
 const TransferDestinationPage = lazy(() => import('../../pages/TransferDestinationPage'));
-const RecipientBankPage = lazy(() => import('../../pages/RecipientBankPage'));
-const RecipientUserPage = lazy(() => import('../../pages/RecipientUserPage'));
+const BankWithdrawalPage = lazy(() => import('../../pages/BankWithdrawalPage'));
+const UserTransferPage = lazy(() => import('../../pages/UserTransferPage'));
 const HistoryPage = lazy(() => import('../../pages/HistoryPage'));
 const HistoryDetailsPage = lazy(() => import('../../pages/HistoryDetailsPage'));
 const ProfilePage = lazy(() => import('../../pages/ProfilePage'));
@@ -52,8 +52,8 @@ const App = () => {
 
             <Route path="send">
               <Route index element={<TransferDestinationPage />} />
-              <Route path="user" element={<RecipientUserPage />} />
-              <Route path="bank" element={<RecipientBankPage />} />
+              <Route path="user" element={<UserTransferPage />} />
+              <Route path="bank" element={<BankWithdrawalPage />} />
             </Route>
 
             <Route path="profile" element={<ProfilePage />} />
