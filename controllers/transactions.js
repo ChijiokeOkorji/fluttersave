@@ -186,7 +186,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
-    const reference = `${v4()}_PMCKDU_1`;
+    const reference = "dfs23fhr7ntg0293039_PMCKDU_1";
     if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
       return res.status(400).json({
         status: false,
