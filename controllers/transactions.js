@@ -199,7 +199,7 @@ const withdrawal = asyncWraper(async (req, res) => {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
     const reference = "dfs23fhr7ntg0293039_PMCKDU_1";
     const currency = "NGN";
-    if (!fromEmail && !amount && !accountNumber && !bankCode && !summary) {
+    if (!fromEmail || !amount || !accountNumber || !bankCode || !summary) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
@@ -242,9 +242,12 @@ const withdrawal = asyncWraper(async (req, res) => {
 const userTransactions = asyncWraper(async (req, res) => {
   const user = await User.findById(req.params.id).populate({
     path: "transactions",
-    select: "trnxType purpose amount reference trnxSummary createdAt",
+    select: "trnxType purpose amount reference trnxSummary createdAt"
   });
-  res.status(201).json(user.transactions);
+
+  const returnedData = user.transactions.map(item => ({...item._doc, amount: parseFloat(item.amount), createdAt: item.createdAt.toLocaleString()}));
+
+  res.status(201).json(returnedData);
 });
 
 module.exports = {

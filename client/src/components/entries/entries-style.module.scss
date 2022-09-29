@@ -37,7 +37,7 @@
       @include abstracts.state-overlay(#ffffff00, abstracts.$main-color, 96%);
     }
 
-    .sender {
+    .reference {
       @include abstracts.body2-font;
       height: 1rem;
       white-space: nowrap;

@@ -90,7 +90,7 @@ const SignUpForm = () => {
       }
     }
 
-    return false
+    return false;
   }, [validateInput]);
 
   async function handleSubmit() {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { update } from '../store/balance';
+import { updateBalance } from '../store/balance';
 
 import axios from 'axios';
 
@@ -16,16 +16,14 @@ const HomePage = () => {
   const balanceData = useSelector(state => state.balance);
 
   useEffect(() => {
-    if (!balanceData) {
-      async function getBalance() {
-        const data = await axios.post('/fluttersave/balance', {email: userData.Email});
+    async function getBalance() {
+      const data = await axios.get(`/fluttersave/balance/${userData["User ID"]}`);
 
-        dispatch(update(data.data.Balance));
-      }
-
-      getBalance();
+      dispatch(updateBalance(data.data.Balance));
     }
-  }, [dispatch, balanceData, userData]);
+
+    getBalance();
+  }, [dispatch, userData, balanceData]);
 
   return (
     <Main align="spread">

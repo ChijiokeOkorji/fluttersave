@@ -1,0 +1,19 @@
+@use '../../global-styles/abstracts';
+
+.errorArea {
+  align-self: center;
+
+  .title, .body {
+    margin: 2rem;
+    text-align: center
+  }
+
+  .title {
+    @include abstracts.h4-font;
+  }
+
+  a {
+    color: abstracts.$main-color;
+    text-decoration: underline;
+  }
+}

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+import { formatNumber } from '../../logic/format-number';
+
 import styles from './entries-style.module.scss';
 
 const Entries = ({ title, type, data }) => {
@@ -18,15 +20,15 @@ const Entries = ({ title, type, data }) => {
 
       {(type === 'tx') && 
         data.map((item, index) => (
-          <Link to={`/history/${item.txRef}`} state={{ data: item }} key={index}>
+          <Link to={`/history/${item.id}`} state={{ data: item }} key={index}>
             <div className={styles.txEntry}>
-              <span className={styles.sender}>{item.sender}</span>
+              <span className={styles.reference}>{item.Reference}</span>
 
               <div
-                className={`${(item.type === 'credit') ? styles.credit : styles.debit} ${styles.right}`}
+                className={`${(item["Transaction Type"] === 'CR') ? styles.credit : styles.debit} ${styles.right}`}
               >
-                <div>N{Number(item.amount).toLocaleString('us')}</div>
-                <div>{(item.type === 'credit') ? 'Credit' : 'Debit'}</div>
+                <div>N{formatNumber(parseFloat(item.Amount))}</div>
+                <div>{(item["Transaction Type"] === 'CR') ? 'Credit' : 'Debit'}</div>
               </div>
             </div>
           </Link>

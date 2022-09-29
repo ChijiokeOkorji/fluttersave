@@ -33,7 +33,12 @@ const InputField = ({ type, placeHolder, value, onChange, validateInput, setShou
     if (type === 'amount') {
       if ((/^[0-9]+[.]{1}[0-9]{0,2}$/).test(target.value)) return onChange({[createNameAttribute]: target.value});
       if ((/^[0-9]*$/).test(target.value)) return onChange({[createNameAttribute]: target.value});
-      if ((/^[.]$/).test(target.value)) return onChange({[createNameAttribute]: value});// REVIEW THIS LINE
+
+      return onChange({[createNameAttribute]: value});
+    }
+
+    if (type === 'integer') {
+      if ((/^[0-9]*$/).test(target.value)) return onChange({[createNameAttribute]: target.value});
 
       return onChange({[createNameAttribute]: value});
     }
@@ -71,7 +76,7 @@ const InputField = ({ type, placeHolder, value, onChange, validateInput, setShou
       <input
         className={styles.input}
         {...(
-          ((/tel|amount/).test(type)) ? {inputMode: 'numeric'} :
+          ((/tel|amount|integer/).test(type)) ? {inputMode: 'numeric'} :
           (type === 'password' && !showPassword) ? {type: 'password'} : {}
         )}
         placeholder={placeHolder}

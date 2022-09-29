@@ -1,9 +1,10 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from 'react-router-dom';
 
+import { Loading } from '../loading';
+import { ErrorPage } from '../../pages/ErrorPage';
 import { RequireAuth } from '../../pages/RequireAuth';
 import { HomeLayout } from '../home-layout';
-import { Loading } from '../loading';
 
 import styles from './app-style.module.scss';
 
@@ -24,6 +25,8 @@ const App = () => {
     <div className={styles.child}>
       <Suspense fallback={<Loading />}>
         <Routes>
+          <Route path="*" element={<ErrorPage />} />
+
           <Route path="/" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
 
@@ -60,12 +63,5 @@ const App = () => {
     </div>
   );
 };
-
-// TODO
-// Error page
-// Flutterwave integration
-// History
-// NOTE: Convert all backend instances of email toLowerCase()
-// Frequency of GET /balance
 
 export { App };

@@ -21,7 +21,7 @@
     justify-items: stretch;
     align-items: stretch;
 
-    * {
+    iframe {
       @include layout.grid-full-child();
     }
   }

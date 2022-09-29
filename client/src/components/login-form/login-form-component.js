@@ -65,7 +65,7 @@ const LoginForm = ({ redirect }) => {
       }
     }
 
-    return false
+    return false;
   }, [validateInput]);
 
   async function handleSubmit() {

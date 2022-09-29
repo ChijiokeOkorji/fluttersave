@@ -7,10 +7,10 @@ const {
   balance
 } = require("../controllers/users");
 
-router.route("/register").post(register);
+router.post("/register", register);
 
-router.route("/login").post(login);
+router.post("/login", login);
 
-router.route("/balance").post(balance);
+router.get("/balance/:id", balance);
 
 module.exports = router;

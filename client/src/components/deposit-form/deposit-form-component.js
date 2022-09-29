@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import axios from 'axios';
 
 import { isAmountValid } from "../../logic/input-validate";
@@ -10,6 +12,9 @@ import { InputField } from "../input-field";
 import { Button } from "../button";
 
 const DepositForm = () => {
+  const userData = useSelector(store => store.user);
+  const navigate = useNavigate();
+
   const [amount, setAmount] = useState('');
 
   const [validateAmount, setValidateAmount] = useState({
@@ -44,35 +49,25 @@ const DepositForm = () => {
       return true;
     }
 
-    return false
+    return false;
   }, [validateAmount]);
 
-  const [redirect, setRedirect] = useState(false);
-  const [redirectLink, setRedirectLink] = useState('');
-
-  async function handleSignup() {
+  async function handleSubmit() {
     try {
       setIsLoading(true);
 
       const response = await axios.post('/fluttersave/deposit', {
-        fullname: 'John Doe',
-        toEmail: 'johndoe@anonymous.com',
-        mobileNumber: '(+234) 1234567890',
-        depositAmount: '5000'
+        fullname: `${userData["First Name"]} ${userData["Last Name"]}`,
+        toEmail: userData.Email,
+        mobileNumber: userData["Phone Number"],
+        depositAmount: amount
       });
-  
-      console.log(response);
 
-      setRedirectLink(response.data.link);
-      setRedirect(true);
-
-      // dispatch(login(data.data));
+      navigate("/deposit/modal", { state: { src: response.data.link }, replace: true });
     } catch(err) {
       setIsLoading(false);
 
-      console.log(err)
-
-      // setServerError(err.response.data.message);
+      setServerError(err.response.data.message);
 
       setTimeout(() => {
         setServerError('');
@@ -81,14 +76,10 @@ const DepositForm = () => {
   }
 
   return (
-    <Form title="Card Deposit" onSubmit={handleSignup} popup={serverError}>
+    <Form title="Card Deposit" onSubmit={handleSubmit} popup={serverError}>
       <InputField type="amount" placeHolder="Amount" value={amount} onChange={handleChange} validateInput={validateAmount} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid amount" />
 
       <Button label="Deposit" disabled={disableButton} />
-
-      {redirect &&
-        <Navigate to="/deposit/modal" replace state={{ src: redirectLink }} />
-      }
 
       {isLoading &&
         <Loading />
