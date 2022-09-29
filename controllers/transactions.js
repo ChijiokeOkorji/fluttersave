@@ -186,12 +186,20 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
-    const reference = "dfs23fhr7ntg0293048_PMCKDU_1";
-    const currency = "NGN";
+    const reference = `${v4()}_PMCKDU_1`;
     if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
+      });
+    }
+
+    const walletUser = await User.findOne({ email: fromEmail });
+
+    if (Number(walletUser.balance) < Number(amount)) {
+      return res.status(400).json({
+        status: false,
+        message: "Insufficient balance to make withdrawal",
       });
     }
 
