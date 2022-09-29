@@ -179,8 +179,7 @@ const bankWithdrawal = async ({
           narration: summary,
           currency: "NGN",
           reference: reference,
-          callback_url:
-            "https://webhook.site/91c8e065-1223-488a-8a19-464af49cb414",
+          callback_url: "https://fluttersave.herokuapp.com/home",
           debit_currency: "NGN",
           meta: {
             email: fromEmail,
