@@ -123,6 +123,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       });
     }
     // for payout webhook
+
+    console.log("Email: ", debEmail);
     if (
       payload.transfer.status === "SUCCESSFUL" &&
       payload.transfer.currency === "NGN"
@@ -171,7 +173,6 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       //   status: true,
       //   message: "withdrawal successful",
       // });
-      console.log("Email: ", debEmail);
     }
     return res.status(401).json({
       status: true,
