@@ -87,8 +87,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     // for collection webhook
     if (
-      payload.data.status === "successful" &&
-      payload.data.currency === "NGN"
+      payload.data?.status === "successful" &&
+      payload.data?.currency === "NGN"
     ) {
       // console.log("wallet:", csEmail);
 
@@ -135,9 +135,10 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
     // console.log("Email: ", debEmail);
     if (
-      payload.transfer.status === "SUCCESSFUL" &&
-      payload.transfer.currency === "NGN"
+      payload.transfer?.status === "SUCCESSFUL" &&
+      payload.transfer?.currency === "NGN"
     ) {
+      console.log('Adekunle is working...payout is working')
       // const dbUser = await User.findOne({ email: debEmail });
       // if (!dbUser) {
       //   return {
