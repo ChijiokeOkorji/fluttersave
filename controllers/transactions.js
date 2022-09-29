@@ -127,50 +127,51 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       payload.transfer.status === "SUCCESSFUL" &&
       payload.transfer.currency === "NGN"
     ) {
-      const dbUser = await User.findOne({ email: debEmail });
-      if (!dbUser) {
-        return {
-          status: false,
-          statusCode: 404,
-          message: `User ${debEmail} doesn\'t exist`,
-        };
-      }
+      // const dbUser = await User.findOne({ email: debEmail });
+      // if (!dbUser) {
+      //   return {
+      //     status: false,
+      //     statusCode: 404,
+      //     message: `User ${debEmail} doesn\'t exist`,
+      //   };
+      // }
 
-      if (Number(dbUser.balance) < Number(debAmount)) {
-        return {
-          status: false,
-          statusCode: 400,
-          message: `User ${debEmail} has insufficient balance`,
-        };
-      }
+      // if (Number(dbUser.balance) < Number(debAmount)) {
+      //   return {
+      //     status: false,
+      //     statusCode: 400,
+      //     message: `User ${debEmail} has insufficient balance`,
+      //   };
+      // }
 
-      const userUpdated = await User.findOneAndUpdate(
-        { email: debEmail },
-        { $inc: { balance: -debAmount } }
-      );
-      const dbTransaction = new Transaction({
-        trnxType: "DR",
-        purpose: "withdrawal",
-        amount: debAmount,
-        userEmail: debEmail,
-        reference: debtxReference,
-        balanceBefore: Number(dbUser.balance),
-        balanceAfter: Number(dbUser.balance) - Number(debAmount),
-        trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
-      });
+      // const userUpdated = await User.findOneAndUpdate(
+      //   { email: debEmail },
+      //   { $inc: { balance: -debAmount } }
+      // );
+      // const dbTransaction = new Transaction({
+      //   trnxType: "DR",
+      //   purpose: "withdrawal",
+      //   amount: debAmount,
+      //   userEmail: debEmail,
+      //   reference: debtxReference,
+      //   balanceBefore: Number(dbUser.balance),
+      //   balanceAfter: Number(dbUser.balance) - Number(debAmount),
+      //   trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
+      // });
 
-      userUpdated.transactions.push(dbTransaction);
-      await dbTransaction.save();
-      await userUpdated.save();
+      // userUpdated.transactions.push(dbTransaction);
+      // await dbTransaction.save();
+      // await userUpdated.save();
 
-      console.log(dbTransaction);
+      // console.log(dbTransaction);
 
-      console.log(`Debit successful`);
+      // console.log(`Debit successful`);
 
-      return res.status(201).json({
-        status: true,
-        message: "withdrawal successful",
-      });
+      // return res.status(201).json({
+      //   status: true,
+      //   message: "withdrawal successful",
+      // });
+      console.log("Email: ", debEmail);
     }
     return res.status(401).json({
       status: true,
