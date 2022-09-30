@@ -23,7 +23,7 @@ const HomePage = () => {
     }
 
     getBalance();
-  }, [dispatch, userData, balanceData]);
+  });
 
   return (
     <Main align="spread">
