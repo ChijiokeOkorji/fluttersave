@@ -129,7 +129,7 @@ const BankWithdrawalForm = () => {
         amount: recipientData.amount,
         accountNumber: recipientData.accountNumber,
         bankCode: recipientData.accountBank,
-        narration: recipientData.narration || ' '
+        narration: recipientData.narration
       });
 
       setServerError(response.data.message);
