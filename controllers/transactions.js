@@ -68,11 +68,11 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     console.log(payload);
 
     const csEmail = payload.customer?.email;
-    const userName = payload.customer?.fullName;
     const txAmount = payload.amount;
     const txReference = payload.txRef;
     const debEmail = payload.transfer?.meta.email;
     const debtxReference = payload.transfer?.reference;
+    const debAccountBank = payload.transfer?.bank_name;
     const debAccountNum = payload.transfer?.account_number;
     const debAmount = payload.transfer?.amount;
     const debNarration = payload.transfer?.narration;
@@ -99,13 +99,13 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
       const transaction = new Transaction({
         trnxType: "CR",
-        purpose: "deposit",
+        purpose: "Deposit",
         amount: txAmount,
         userEmail: csEmail,
         reference: txReference,
         balanceBefore: Number(userWallet.balance),
         balanceAfter: Number(userWallet.balance) + Number(txAmount),
-        trnxSummary: `TRFR FROM: ${userName}`,
+        trnxSummary: "CARD DEPOSIT",
       });
 
       updatedUser.transactions.push(transaction);
@@ -146,14 +146,16 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       );
       const dbTransaction = new Transaction({
         trnxType: "DR",
-        purpose: "withdrawal",
+        purpose: "Withdrawal",
         amount: debAmount,
         userEmail: debEmail,
         reference: debtxReference,
         balanceBefore: Number(dbUser.balance),
         balanceAfter: Number(dbUser.balance) - Number(debAmount),
-        trnxSummary: `TRANSFER TO: ${debAccountNum}`,
-        trnxNarration: debNarration
+        trnxSummary: "BANK WITHDRAWAL",
+        trnxNarration: debNarration,
+        bankName: debAccountBank,
+        accountNumber: debAccountNum
       });
 
       userUpdated.transactions.push(dbTransaction);
@@ -238,7 +240,7 @@ const userTransactions = asyncWraper(async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate({
       path: "transactions",
-      select: "trnxType purpose amount reference trnxSummary trnxNarration createdAt"
+      select: "trnxType purpose amount reference trnxSummary trnxNarration bankName accountNumber createdAt"
     });
   
     const returnedData = user.transactions.map(item => ({...item._doc, amount: parseFloat(item.amount), createdAt: item.createdAt.toLocaleString()}));
@@ -261,10 +263,3 @@ module.exports = {
   withdrawal,
   userTransactions,
 };
-
-// else {
-//   return res.status(401).json({
-//     status: true,
-//     message: "Transfer failed",
-//   }); // Inform the customer their payment was unsuccessful
-// }

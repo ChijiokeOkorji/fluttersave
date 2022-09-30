@@ -22,7 +22,7 @@ const transfer = asyncWraper(async (req, res) => {
       debitAccount({
         amount,
         email: fromEmail,
-        purpose: "P2P",
+        purpose: "Transfer",
         reference,
         trnxSummary: `TRANSFER TO: ${toEmail}`,
         session,

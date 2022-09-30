@@ -25,11 +25,15 @@ const HistoryPage = () => {
           "Amount": item.amount,
           "Currency": "NGN",
           "Summary": item.trnxSummary,
+          "Bank": item.bankName,
+          "Account Number": item.accountNumber,
           "Narration": item.trnxNarration
         };
 
-        if (historyEntry.Narration == null) {
-          delete historyEntry.Narration
+        for (let key in historyEntry) {
+          if (historyEntry[key] == null) {
+            delete historyEntry[key];
+          }
         }
 
         return historyEntry;

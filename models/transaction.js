@@ -10,7 +10,7 @@ const transactionSchema = new Schema(
     },
     purpose: {
       type: String,
-      enum: ["deposit", "P2P", "withdrawal"],
+      enum: ["Deposit", "Transfer", "Withdrawal"],
       required: true,
     },
     amount: {
@@ -41,45 +41,14 @@ const transactionSchema = new Schema(
     trnxNarration: {
       type: String,
     },
+    accountNumber: {
+      type: String,
+    },
+    bankName: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
-
-// const transactionSchema = new Schema(
-//   {
-//     trnxType: {
-//       type: String,
-//       required: true,
-//       enum: ["CR", "DR"],
-//     },
-//     purpose: {
-//       type: String,
-//       enum: ["deposit", "transfer", "withdraw"],
-//       required: true,
-//     },
-//     amount: {
-//       type: mongoose.Decimal128,
-//       required: true,
-//       default: 0.0,
-//     },
-//     userEmail: {
-//       type: String,
-//       ref: "User",
-//     },
-//     reference: {
-//       type: String,
-//       required: true,
-//     },
-//     balanceBefore: {
-//       type: mongoose.Decimal128,
-//       required: true,
-//     },
-//     balanceAfter: {
-//       type: mongoose.Decimal128,
-//       required: true,
-//     },
-//   },
-//   { timestamps: true }
-// );
 
 module.exports = mongoose.model("Transaction", transactionSchema);
