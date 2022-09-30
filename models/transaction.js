@@ -6,7 +6,7 @@ const transactionSchema = new Schema(
     trnxType: {
       type: String,
       required: true,
-      enum: ["CR", "DR"],
+      enum: ["Credit", "Debit"],
     },
     purpose: {
       type: String,

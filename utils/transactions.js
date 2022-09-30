@@ -32,7 +32,7 @@ const creditAccount = async ({
   );
 
   const transaction = new Transaction({
-    trnxType: "CR",
+    trnxType: "Credit",
     purpose,
     amount,
     userEmail: email,
@@ -88,7 +88,7 @@ const debitAccount = async ({
     { session }
   );
   const transaction = new Transaction({
-    trnxType: "DR",
+    trnxType: "Debit",
     purpose,
     amount,
     userEmail: email,

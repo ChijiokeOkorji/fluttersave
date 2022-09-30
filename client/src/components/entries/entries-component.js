@@ -25,10 +25,10 @@ const Entries = ({ title, type, data }) => {
               <span className={styles.reference}>{item.Reference}</span>
 
               <div
-                className={`${(item["Transaction Type"] === 'CR') ? styles.credit : styles.debit} ${styles.right}`}
+                className={`${(item["Transaction Type"] === 'Credit') ? styles.credit : styles.debit} ${styles.right}`}
               >
                 <div>N{formatNumber(parseFloat(item.Amount))}</div>
-                <div>{(item["Transaction Type"] === 'CR') ? 'Credit' : 'Debit'}</div>
+                <div>{item["Transaction Type"]}</div>
               </div>
             </div>
           </Link>

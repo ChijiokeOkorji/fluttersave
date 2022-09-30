@@ -30,6 +30,8 @@ const HistoryPage = () => {
           "Narration": item.trnxNarration
         };
 
+        console.log(historyEntry);
+
         for (let key in historyEntry) {
           if (historyEntry[key] == null) {
             delete historyEntry[key];
