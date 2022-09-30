@@ -1,13 +1,9 @@
 const User = require("../models/user");
-const mongoose = require("mongoose");
 const Transaction = require("../models/transaction");
 const { v4 } = require("uuid");
 const {
-  creditAccount,
-  debitAccount,
   cardDeposit,
-  bankWithdrawal,
-  fundAccount,
+  bankWithdrawal
 } = require("../utils/transactions");
 const asyncWraper = require("../middleware/asyncWraper");
 
@@ -16,7 +12,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
   try {
     const { fullname, mobileNumber, toEmail, depositAmount } = req.body;
     const reference = v4();
-    const currency = "NGN";
+    
     if (!(fullname && mobileNumber && depositAmount && toEmail)) {
       return res.status(400).json({
         status: false,
@@ -37,6 +33,7 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
     const failedTxns = depositResult.filter(
       (result) => result.status !== "success"
     );
+
     if (failedTxns.length) {
       const errors = failedTxns.map((a) => a.message);
       return res.status(400).json({
@@ -45,12 +42,12 @@ const makeCardDeposit = asyncWraper(async (req, res) => {
       });
     }
 
-    // return res.redirect(depositResult[0].link);
     return res.status(200).json(depositResult[0]);
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: `Unable to make card Deposit. Please try again. \n Error: ${err}`,
+      message: `Unable to make card Deposit. Please try again.
+      Error: ${err}`,
     });
   }
 });
@@ -114,7 +111,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 
       return res.status(201).json({
         status: true,
-        message: "deposit successful",
+        message: "Deposit Successful",
       });
     }
 
@@ -132,18 +129,11 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         };
       }
 
-      if (Number(dbUser.balance) < Number(debAmount)) {
-        return {
-          status: false,
-          statusCode: 400,
-          message: `User ${debEmail} has insufficient balance`,
-        };
-      }
-
       const userUpdated = await User.findOneAndUpdate(
         { email: debEmail },
         { $inc: { balance: -debAmount } }
       );
+
       const dbTransaction = new Transaction({
         trnxType: "Debit",
         purpose: "Withdrawal",
@@ -162,24 +152,21 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       await dbTransaction.save();
       await userUpdated.save();
 
-      console.log(dbTransaction);
-
-      console.log(`Debit successful`);
-
       return res.status(201).json({
         status: true,
-        message: "withdrawal successful",
+        message: "Withdrawal Successful",
       });
     }
     
     return res.status(401).json({
       status: true,
-      message: "Transfer failed",
+      message: "Transfer Failed",
     });
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: `Unable to perform transaction. Please try again. \n Error: ${err}`,
+      message: `Unable to perform transaction. Please try again.
+      Error: ${err}`,
     });
   }
 });
@@ -189,6 +176,7 @@ const withdrawal = asyncWraper(async (req, res) => {
   try {
     const { fromEmail, amount, accountNumber, bankCode, narration } = req.body;
     const reference = `${v4()}_PMCKDU_1`;
+
     if (!(fromEmail && amount && accountNumber && bankCode)) {
       return res.status(400).json({
         status: false,
@@ -221,6 +209,7 @@ const withdrawal = asyncWraper(async (req, res) => {
     );
     if (failedTxns.length) {
       const errors = failedTxns.map((a) => a.message);
+      
       return res.status(400).json({
         status: false,
         message: errors,
@@ -231,7 +220,8 @@ const withdrawal = asyncWraper(async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: `Unable to make withdrawal. Please try again. \n Error: ${err}`,
+      message: `Unable to make withdrawal. Please try again.
+      Error: ${err}`,
     });
   }
 });

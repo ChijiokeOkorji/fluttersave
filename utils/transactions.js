@@ -1,12 +1,6 @@
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 const got = require("got");
-// const Flutterwave = require("flutterwave-node-v3");
-
-// const flw = new Flutterwave(
-//   process.env.FLW_PUBLIC_KEY,
-//   process.env.FLW_SECRET_KEY
-// );
 
 const creditAccount = async ({
   amount,
@@ -46,9 +40,6 @@ const creditAccount = async ({
   await transaction.save({ session });
   await updatedUser.save();
 
-  // console.log(transaction);
-
-  console.log(`Credit successful`);
   return {
     status: true,
     statusCode: 201,
@@ -87,6 +78,7 @@ const debitAccount = async ({
     { $inc: { balance: -amount } },
     { session }
   );
+
   const transaction = new Transaction({
     trnxType: "Debit",
     purpose,
@@ -102,7 +94,6 @@ const debitAccount = async ({
   await transaction.save({ session });
   await updatedUser.save();
 
-  console.log(`Debit successful`);
   return {
     status: true,
     statusCode: 201,
@@ -187,7 +178,6 @@ const bankWithdrawal = async ({
         },
       })
       .json();
-    console.log(response);
 
     return { status: response.status, message: response.message };
   } catch (err) {

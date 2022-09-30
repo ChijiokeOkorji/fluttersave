@@ -1,4 +1,3 @@
-const Transaction = require("../models/transaction");
 const mongoose = require("mongoose");
 const { v4 } = require("uuid");
 const { creditAccount, debitAccount } = require("../utils/transactions");
@@ -62,7 +61,8 @@ const transfer = asyncWraper(async (req, res) => {
 
     return res.status(500).json({
       status: false,
-      message: `Unable to perform transfer. Please try again. \n Error: ${err}`,
+      message: `Unable to perform transfer. Please try again.
+      Error: ${err}`,
     });
   }
 });
