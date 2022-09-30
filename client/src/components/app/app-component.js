@@ -59,4 +59,9 @@ const App = () => {
   );
 };
 
+// TODO
+// Review all forms
+// Reverse transaction array
+// When to fetch updates from server
+
 export { App };

@@ -233,14 +233,24 @@ const withdrawal = asyncWraper(async (req, res) => {
 });
 
 const userTransactions = asyncWraper(async (req, res) => {
-  const user = await User.findById(req.params.id).populate({
-    path: "transactions",
-    select: "trnxType purpose amount reference trnxSummary createdAt"
-  });
-
-  const returnedData = user.transactions.map(item => ({...item._doc, amount: parseFloat(item.amount), createdAt: item.createdAt.toLocaleString()}));
-
-  res.status(201).json(returnedData);
+  try {
+    const user = await User.findById(req.params.id).populate({
+      path: "transactions",
+      select: "trnxType purpose amount reference trnxSummary createdAt"
+    });
+  
+    const returnedData = user.transactions.map(item => ({...item._doc, amount: parseFloat(item.amount), createdAt: item.createdAt.toLocaleString()}));
+  
+    returnedData.reverse();
+  
+    res.status(201).json(returnedData);
+  } catch(err) {
+    return res.status(500).json({
+      status: false,
+      message: `Unable to fetch transaction history. Please try again.
+      Error: ${err}`,
+    });
+  }
 });
 
 module.exports = {
