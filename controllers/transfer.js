@@ -30,7 +30,7 @@ const transfer = asyncWraper(async (req, res) => {
       creditAccount({
         amount,
         email: toEmail,
-        purpose: "P2P",
+        purpose: "Transfer",
         reference,
         trnxSummary: `TRANSFER FROM: ${fromEmail}`,
         session,
