@@ -29,9 +29,7 @@ const HistoryPage = () => {
         };
 
         if (historyEntry.Narration == null) {
-          console.log('nothing passed')
-        } else {
-          console.log('something passed')
+          delete historyEntry.Narration
         }
 
         return historyEntry;
