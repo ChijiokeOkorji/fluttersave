@@ -98,7 +98,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
       );
 
       const transaction = new Transaction({
-        trnxType: "CR",
+        trnxType: "Credit",
         purpose: "Deposit",
         amount: txAmount,
         userEmail: csEmail,
@@ -145,7 +145,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         { $inc: { balance: -debAmount } }
       );
       const dbTransaction = new Transaction({
-        trnxType: "DR",
+        trnxType: "Debit",
         purpose: "Withdrawal",
         amount: debAmount,
         userEmail: debEmail,
