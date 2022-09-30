@@ -27,7 +27,7 @@ const BankWithdrawalForm = () => {
     amount: '',
     accountBank: '',
     accountNumber: '',
-    summary: ''
+    narration: ''
   });
 
   const [validateInput, setValidateInput] = useState({
@@ -129,7 +129,7 @@ const BankWithdrawalForm = () => {
         amount: recipientData.amount,
         accountNumber: recipientData.accountNumber,
         bankCode: recipientData.accountBank,
-        summary: recipientData.summary || ' '
+        narration: recipientData.narration
       });
 
       setServerError(response.data.message);
@@ -161,7 +161,7 @@ const BankWithdrawalForm = () => {
       <InputField type="integer" placeHolder="Account Number" value={recipientData.accountNumber} onChange={handleChange} validateInput={validateInput.accountNumber} setShouldValidate={setShouldValidate} errorMessage="Please enter valid account details" />
       <div>{accountName}</div>
 
-      <InputField placeHolder="Summary" value={recipientData.summary} onChange={handleChange} />
+      <InputField placeHolder="Narration" value={recipientData.narration} onChange={handleChange} />
 
       <Button label="Send" disabled={disableButton} />
 

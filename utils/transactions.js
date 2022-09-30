@@ -162,7 +162,7 @@ const bankWithdrawal = async ({
   fromEmail,
   reference,
   amount,
-  summary,
+  narration,
   accountNumber,
   bankCode,
 }) => {
@@ -176,7 +176,7 @@ const bankWithdrawal = async ({
           account_bank: bankCode,
           account_number: accountNumber,
           amount,
-          narration: summary,
+          narration: narration,
           currency: "NGN",
           reference: reference,
           callback_url: "https://fluttersave.herokuapp.com/fluttersave/fs-webhook",

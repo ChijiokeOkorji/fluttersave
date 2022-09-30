@@ -17,15 +17,24 @@ const HistoryPage = () => {
       const response = await axios.get(`/fluttersave/history/${userData["User ID"]}`, {email: userData.Email});
 
       const formattedResponse = response.data.map(item => {
-        return {
+        const historyEntry = {
           "Date": item.createdAt,
           "Reference": item.reference,
           "Transaction Type": item.trnxType,
           "Purpose": item.purpose,
           "Amount": item.amount,
           "Currency": "NGN",
-          "Summary": item.trnxSummary
+          "Summary": item.trnxSummary,
+          "Narration": item.trnxNarration
         };
+
+        if (historyEntry.Narration == null) {
+          console.log('nothing passed')
+        } else {
+          console.log('something passed')
+        }
+
+        return historyEntry;
       });
 
       dispatch(updateHistory(formattedResponse));

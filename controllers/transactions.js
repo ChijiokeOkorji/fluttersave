@@ -152,7 +152,8 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         reference: debtxReference,
         balanceBefore: Number(dbUser.balance),
         balanceAfter: Number(dbUser.balance) - Number(debAmount),
-        trnxSummary: `TRANSFER TO: ${debAccountNum}. TRANSACTION NARRATION:${debNarration}`,
+        trnxSummary: `TRANSFER TO: ${debAccountNum}`,
+        trnxNarration: debNarration
       });
 
       userUpdated.transactions.push(dbTransaction);
@@ -184,9 +185,9 @@ const verifyWebhook = asyncWraper(async (req, res) => {
 // make a withdral to the users bank account
 const withdrawal = asyncWraper(async (req, res) => {
   try {
-    const { fromEmail, amount, accountNumber, bankCode, summary } = req.body;
+    const { fromEmail, amount, accountNumber, bankCode, narration } = req.body;
     const reference = `${v4()}_PMCKDU_1`;
-    if (!(fromEmail && amount && accountNumber && bankCode && summary)) {
+    if (!(fromEmail && amount && accountNumber && bankCode)) {
       return res.status(400).json({
         status: false,
         message: "Please provide all input fields",
@@ -207,7 +208,7 @@ const withdrawal = asyncWraper(async (req, res) => {
         fromEmail,
         reference,
         amount,
-        summary,
+        narration,
         accountNumber,
         bankCode,
       }),
@@ -237,7 +238,7 @@ const userTransactions = asyncWraper(async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate({
       path: "transactions",
-      select: "trnxType purpose amount reference trnxSummary createdAt"
+      select: "trnxType purpose amount reference trnxSummary trnxNarration createdAt"
     });
   
     const returnedData = user.transactions.map(item => ({...item._doc, amount: parseFloat(item.amount), createdAt: item.createdAt.toLocaleString()}));

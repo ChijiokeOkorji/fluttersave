@@ -38,6 +38,9 @@ const transactionSchema = new Schema(
       type: String,
       required: true,
     },
+    trnxNarration: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
