@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const localData = localStorage.getItem('bank');
+const sessionData = sessionStorage.getItem('bank');
 
 const bankSlice = createSlice({
   name: 'bank',
-  initialState: JSON.parse(localData) || [],
+  initialState: JSON.parse(sessionData) || [],
   reducers: {
     updateBank: (state, action) => {
-      localStorage.setItem('bank', JSON.stringify(action.payload));
+      sessionStorage.setItem('bank', JSON.stringify(action.payload));
 
       return action.payload;
     },
