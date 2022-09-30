@@ -75,6 +75,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
     const debtxReference = payload.transfer?.reference;
     const debAccountNum = payload.transfer?.account_number;
     const debAmount = payload.transfer?.amount;
+    const debNarration = payload.transfer?.narration;
 
     // for collection webhook
     if (
@@ -104,7 +105,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         reference: txReference,
         balanceBefore: Number(userWallet.balance),
         balanceAfter: Number(userWallet.balance) + Number(txAmount),
-        trnxSummary: `TRFR FROM: ${userName}. TRNX REF:${txReference}`,
+        trnxSummary: `TRFR FROM: ${userName}`,
       });
 
       updatedUser.transactions.push(transaction);
@@ -127,7 +128,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         return {
           status: false,
           statusCode: 404,
-          message: `User ${debEmail} doesn\'t exist`,
+          message: `User ${debEmail} doesn't exist`,
         };
       }
 
@@ -151,7 +152,7 @@ const verifyWebhook = asyncWraper(async (req, res) => {
         reference: debtxReference,
         balanceBefore: Number(dbUser.balance),
         balanceAfter: Number(dbUser.balance) - Number(debAmount),
-        trnxSummary: `TRFR TO: ${debAccountNum}. TRNX REF:${debtxReference}`,
+        trnxSummary: `TRANSFER TO: ${debAccountNum}. TRANSACTION NARRATION:${debNarration}`,
       });
 
       userUpdated.transactions.push(dbTransaction);

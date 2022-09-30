@@ -24,7 +24,7 @@ const transfer = asyncWraper(async (req, res) => {
         email: fromEmail,
         purpose: "P2P",
         reference,
-        trnxSummary: `TRFR TO: ${toEmail}. TRNX REF:${reference}`,
+        trnxSummary: `TRANSFER TO: ${toEmail}`,
         session,
       }),
       creditAccount({
@@ -32,7 +32,7 @@ const transfer = asyncWraper(async (req, res) => {
         email: toEmail,
         purpose: "P2P",
         reference,
-        trnxSummary: `TRFR FROM: ${fromEmail}. TRNX REF:${reference} `,
+        trnxSummary: `TRANSFER FROM: ${fromEmail}`,
         session,
       }),
     ]);

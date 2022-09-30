@@ -70,7 +70,7 @@ const debitAccount = async ({
     return {
       status: false,
       statusCode: 404,
-      message: `User ${email} doesn\'t exist`,
+      message: `User ${email} doesn't exist`,
     };
   }
 
