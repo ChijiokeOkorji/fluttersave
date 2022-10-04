@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const sessionData = sessionStorage.getItem('bank');
 
 const bankSlice = createSlice({
-  name: 'bank',
+  name: 'banks',
   initialState: JSON.parse(sessionData) || [],
   reducers: {
     updateBank: (state, action) => {
