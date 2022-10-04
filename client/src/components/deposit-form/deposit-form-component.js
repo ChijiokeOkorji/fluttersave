@@ -75,7 +75,7 @@ const DepositForm = () => {
 
     return (
         <Form title={'Card Deposit'} onSubmit={handleSubmit} popup={serverError}>
-            <InputField errorMessage={'Please enter a valid amount'} setShouldValidate={setShouldValidate} validateInput={validateAmount} onChange={handleChange} type='amount' value={amount} placeHolder='Amount' />
+            <InputField errorMessage={'Please enter a value between 100 and 500,000'} setShouldValidate={setShouldValidate} validateInput={validateAmount} onChange={handleChange} type='amount' value={amount} placeHolder='Amount' />
 
             <Button label="Deposit" disabled={disableButton} />
 

@@ -154,7 +154,7 @@ const BankWithdrawalForm = () => {
 
   return (
     <Form title="Bank Withdrawal Details" onSubmit={handleSubmit} popup={serverError}>
-      <InputField type="amount" placeHolder="Amount" value={recipientData.amount} onChange={handleChange} validateInput={validateInput.amount} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid amount" />
+      <InputField type="amount" placeHolder="Amount" value={recipientData.amount} onChange={handleChange} validateInput={validateInput.amount} setShouldValidate={setShouldValidate} errorMessage="Please enter a value between 100 and 500,000" />
 
       <Dropdown data={bankData} value={recipientData.accountBank} onSelect={handleSelect} />
 

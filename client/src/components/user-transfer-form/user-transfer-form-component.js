@@ -96,7 +96,7 @@ const UserTransferForm = () => {
 
   return (
     <Form title="User Transfer Details" onSubmit={handleSubmit} popup={serverError}>
-      <InputField type="amount" placeHolder="Amount" value={recipientData.amount} onChange={handleChange} validateInput={validateInput.amount} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid amount" />
+      <InputField type="amount" placeHolder="Amount" value={recipientData.amount} onChange={handleChange} validateInput={validateInput.amount} setShouldValidate={setShouldValidate} errorMessage="Please enter a value between 100 and 500,000" />
       <InputField placeHolder="Email" value={recipientData.email} onChange={handleChange} validateInput={validateInput.email} setShouldValidate={setShouldValidate} errorMessage="Please enter a valid email address" />
 
       <Button label="Send" disabled={disableButton} />
