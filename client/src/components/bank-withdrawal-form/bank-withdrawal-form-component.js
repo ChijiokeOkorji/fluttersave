@@ -17,7 +17,7 @@ let source = new axios.CancelToken.source();// for cancelling axios requests
 
 const BankWithdrawalForm = () => {
   const dispatch = useDispatch();
-  const bankData = useSelector(store => store.bank);
+  const bankData = useSelector(store => store.banks);
   const userData = useSelector(store => store.user);
   const navigate = useNavigate();
 
