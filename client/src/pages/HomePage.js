@@ -17,7 +17,7 @@ const HomePage = () => {
 
   useEffect(() => {
     async function getBalance() {
-      const data = await axios.get(`/fluttersave/balance/${userData["User ID"]}`);
+      const data = await axios.post(`/fluttersave/balance/${userData["User ID"]}`);
 
       dispatch(updateBalance(data.data.Balance));
     }
