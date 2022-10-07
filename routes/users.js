@@ -7,6 +7,6 @@ router.post("/register", register);
 
 router.post("/login", login);
 
-router.get("/balance/:id", balance);
+router.post("/balance/:id", balance);
 
 module.exports = router;
