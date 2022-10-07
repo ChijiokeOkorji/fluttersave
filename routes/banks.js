@@ -6,7 +6,7 @@ const {
   validateAccount
 } = require("../controllers/banks");
 
-router.get("/banks", getBanks);
+router.post("/banks", getBanks);
 
 router.post("/account-validate", validateAccount);
 
