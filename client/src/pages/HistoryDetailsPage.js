@@ -4,7 +4,7 @@ import { Main } from '../components/main';
 import { BackButton } from '../components/back-button';
 import { Entries } from '../components/entries';
 
-const ProfilePage = () => {
+const HistoryDetailsPage = () => {
   const location = useLocation();
 
   const { data } = location.state;
@@ -17,4 +17,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default HistoryDetailsPage;
