@@ -20,7 +20,7 @@ const Entries = ({ title, type, data }) => {
 
       {(type === 'tx') && 
         data.map((item, index) => (
-          <Link to={`/history/${item.id}`} state={{ data: item }} key={index}>
+          <Link to={`/history/${item.Reference}`} state={{ data: item }} key={index}>
             <div className={styles.txEntry}>
               <span className={styles.reference}>{item.Reference}</span>
 
